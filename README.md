@@ -26,7 +26,7 @@
 
 
 ## Installation
-1. Add this line to your composer.json
+1. Add this line to your `composer.json`
 ``` yaml
     "require": {
         ...
@@ -74,6 +74,14 @@
             page_name: p
         template:
             pagination: ObCmsBundle:Paginator:sliding.html.twig
+```
+
+6. Last thing but not least is to import the routing
+``` yaml
+    # app/config/routing.yml
+    ob_cms:
+        resource: "@ObCmsBundle/Resources/config/routing.yml"
+        prefix:   /the-admin-prefix-of-your-choice
 ```
 
 ## All options
