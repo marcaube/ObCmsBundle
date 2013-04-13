@@ -1,0 +1,23 @@
+{
+    "name": "ob/cms-bundle",
+    "description": "Simple CMS",
+    "type": "symfony-bundle",
+    "keywords": ["symfony2", "cms", "admin", "ob", "marcaube"],
+    "homepage": "https://github.com/marcaube/ObCmsBundle",
+    "authors": [
+        {
+            "name": "Marc Aubé"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3",
+        "symfony/symfony": "2.2.*",
+        "knplabs/knp-paginator-bundle": "dev-master"
+    },
+    "autoload": {
+        "psr-0": {
+            "Ob\\CmsBundle": ""
+        }
+    },
+    "target-dir": "Ob/CmsBundle"
+}
