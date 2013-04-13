@@ -1,0 +1,42 @@
+{% extends "ObCmsBundle::layout.html.twig" %}
+
+{% form_theme edit_form 'ObCmsBundle:Form:fields.html.twig' %}
+
+{% block content %}
+    <div class="space">
+        <div class="page-header">
+            <h1>{{ (module ~ '.edit_title')|trans }}</h1>
+        </div>
+
+        <form action="{{ path('ObCmsBundle_module_update', { 'name': module, 'id': entity.id }) }}"
+              method="post" {{ form_enctype(edit_form) }} class="form-horizontal" id="edit_form">
+            {% block form %}
+                {{ form_rest(edit_form) }}
+            {% endblock %}
+        </form>
+    </div>
+
+    <div class="form-actions">
+        <ul class="record_actions unstyled pull-right">
+            <li>
+                <a id="submit" class="btn btn-primary">{% trans %}obcms.form.edit{% endtrans %}</a>
+            </li>
+            <li>
+                <a class="btn" href="{{ path('ObCmsBundle_module_list', { 'name': module }) }}">
+                    {% trans %}obcms.form.back_to_list{% endtrans %}
+                </a>
+            </li>
+        </ul>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $(function(){
+            $('#submit').click(function() {
+                $('#edit_form').submit();
+            });
+        });
+    </script>
+{% endblock %}

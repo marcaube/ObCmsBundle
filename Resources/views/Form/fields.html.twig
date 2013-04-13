@@ -1,0 +1,78 @@
+{% extends 'form_div_layout.html.twig' %}
+
+{% if prefix is not defined %}
+    {% set prefix = '' %}
+{% endif %}
+
+{% block field_row %}
+    {% spaceless %}
+        <div class="control-group {% if errors|length > 0 %}error{% endif %}">
+            {{ form_label(form, label|default(null), { "attr": { "class": "control-label" } }) }}
+            <div class="controls">
+                {{ form_widget(form, _context) }}
+                {{ form_errors(form) }}
+            </div>
+        </div>
+    {% endspaceless %}
+{% endblock field_row %}
+
+{% block field_errors %}
+    {% spaceless %}
+        {% if errors|length > 0 %}
+            <p class="help-block">
+                {% for error in errors %}
+                    {#<i class="icon icon-warning-sign icon-large"></i>#}
+                    {{ error.messageTemplate|trans(error.messageParameters, 'validators') }}.
+                {% endfor %}
+            </p>
+        {% endif %}
+    {% endspaceless %}
+{% endblock field_errors %}
+
+{% block choice_widget %}
+    {% if expanded %}
+        {% for child in form %}
+            <label class="{{ multiple?'checkbox':'radio' }}">
+                {{ form_widget(child) }}
+                {{ form_label(child) }}
+            </label>
+        {% endfor %}
+    {% else %}
+        {{ parent() }}
+    {% endif %}
+{% endblock choice_widget %}
+
+{% block datetime_widget %}
+    {% spaceless %}
+        {% if widget == 'single_text' %}
+            {{ block('field_widget') }}
+        {% else %}
+            <div {{ block('widget_container_attributes') }}>
+                {{ form_errors(form.date) }}
+                {{ form_errors(form.time) }}
+                {{ form_widget(form.date) }}
+                {{ form_widget(form.time) }}
+            </div>
+        {% endif %}
+    {% endspaceless %}
+{% endblock datetime_widget %}
+
+{% block form_label %}
+{% spaceless %}
+    {% if label is not sameas(false) %}
+        {% if not compound %}
+            {% set label_attr = label_attr|merge({'for': id}) %}
+        {% endif %}
+        {% if required %}
+            {% set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' required')|trim}) %}
+        {% endif %}
+        {% if label is empty %}
+            {% set label = name|humanize %}
+        {% endif %}
+        {% set label_attr = label_attr|merge({'class': label_attr.class|default('') ~ ' control-label' ~ (required ? ' required' : ' optional') }) %}
+        <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>
+            {{ label|trans({}, translation_domain) }}
+        </label>
+    {% endif %}
+{% endspaceless %}
+{% endblock form_label %}

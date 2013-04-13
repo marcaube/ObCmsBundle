@@ -1,0 +1,70 @@
+{% if flat %}
+
+    {% for k, v in items %}
+        {% set url = path('ObCmsBundle_module_list', { 'name': k }) %}
+        <li {% if url == current %}class="active"{% endif %}>
+            <a href="{{ url }}">
+                {{ (k ~ '.menu')|trans }}
+            </a>
+        </li>
+    {% endfor %}
+
+{% else %}
+
+    {% if level is not defined %}
+        {% set level = 1 %}
+    {% endif %}
+
+    {% for k, v in items %}
+        {% set type = varType(v) %}
+
+        {% if type == 'array' and level <= 2%}
+            {% set url = '#' %}
+        {% else %}
+            {% set url = path('ObCmsBundle_module_list', { 'name': v }) %}
+        {% endif %}
+
+        {% if v == 'seperator' %}
+            {% if level == 1 %}
+                <li class="divider-vertical"></li>
+            {% else %}
+                <li class="divider"></li>
+            {% endif %}
+        {% else %}
+            <li {% if type == 'array' %}
+                    {% if level == 1 %}
+                         class="dropdown"
+                    {% elseif level == 2 %}
+                        class="dropdown-submenu"
+                    {% endif %}
+                {% endif %} {% if url == current %}class="active"{% endif %}>
+
+                {% if type == 'array' and level <= 1 %}
+
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        {{ (k ~ '.menu')|trans }}
+                        <b class="caret"></b>
+                    </a>
+
+                {% else %}
+
+                    <a href="{{ url }}">
+                        {% if type != 'array' and v|length > 0 %}
+                            {{ (v ~ '.menu')|trans }}
+                        {% else %}
+                            {{ (k ~ '.menu')|trans }}
+                        {% endif %}
+                    </a>
+
+                {% endif %}
+
+                {% if type == 'array' and level <= 2 %}
+                    <ul class="dropdown-menu">
+                        {% include "ObCmsBundle:Menu:items.html.twig" with {'items': v, 'current': current, 'level': level + 1} %}
+                    </ul>
+                {% endif %}
+            </li>
+        {% endif %}
+    {% endfor %}
+
+{% endif %}

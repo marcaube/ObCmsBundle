@@ -1,0 +1,14 @@
+<label class="control-label muted" for="actions">{% trans %}obcms.list.action_title{% endtrans %} :&nbsp;</label>
+<select name="action" id="actions" class="input-medium">
+    <option value="">----------</option>
+    {%  for action in listActions %}
+        <option value="{{ action }}">{{ ( module ~ '.action_' ~ action)|trans }}</option>
+    {% endfor %}
+    <option value="delete-action">{% trans %}obcms.list.action_delete{% endtrans %}</option>
+</select>
+
+<input type="submit" class="btn btn-medium" value="{% trans %}obcms.list.action_execute{% endtrans %}">
+
+<span class="help-inline">
+    <span id="check-count" class="muted"></span>
+</span>

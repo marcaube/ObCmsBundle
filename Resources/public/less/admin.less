@@ -1,0 +1,190 @@
+@import "bootstrap-2.1.1/bootstrap.less";
+
+body{
+  padding: 60px 0 40px;
+  background: #f1f1f1; //url('../img/bg/furley_bg.png');
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+
+// GLOBAL VALUES
+// ---------------------------------------------------------------------------------------------------------------------
+
+// Typography
+@titleColor:                lighten(#5A5A5A, 10%);
+
+// Dropshadow
+@dropShadowOpacity:         0.35;
+@dropShadowColor:           rgba(0, 0, 0, @dropShadowOpacity);
+
+
+// LAYOUT
+// ---------------------------------------------------------------------------------------------------------------------
+
+// OLCG : One Line CSS Grid - one-half(oh), one-third(ot), two-third(tt) classes from Kickstrap
+.oh,.ot,.tt{float:left;padding:0 2% 2% 0;width:48%}.ot{width:31.9999999999%}.tt{width:63.9999999999%}.cl{clear:both}
+
+// Container
+.cms-wrapper {
+  background-color: #fff;
+  .box-shadow(0 1px 3px @dropShadowColor);
+}
+
+// Content
+.space,
+.cms-container{
+  padding: 5px 30px;
+}
+
+#row-actions {
+  margin:0;
+
+  select{
+    height: 28px;
+    line-height: 28px;
+  }
+}
+
+.pagination{
+  margin: 0;
+}
+
+// Filters
+.with-filters {
+  width:80%;
+}
+.filters {
+  width: 15%;
+}
+
+
+// TYPOGRAPHY
+// ---------------------------------------------------------------------------------------------------------------------
+
+// Page headers
+.page-header{
+  padding:0;
+
+  h1 {
+    color: @titleColor;
+    font-weight: normal;
+  }
+}
+
+table thead th {
+  color: @titleColor;
+}
+
+.text-center
+td.text-center,
+th.text-center,
+.table td.text-center,
+.table th.text-center{
+  text-align: center;
+}
+
+
+// TABLE SORTER
+// ---------------------------------------------------------------------------------------------------------------------
+table tbody tr.selected td,
+.table-striped tbody tr.selected td{
+  background-color: #FFFFCC;
+}
+
+table thead tr a.asc,
+table thead tr a.desc,
+table thead tr a.sortable {
+  color: @titleColor;
+  display: table;
+  width: 100%;
+//  padding-right:20px;
+  background-image: url('../img/bg.gif');
+  background-repeat: no-repeat;
+  background-position: center right;
+  cursor: pointer;
+}
+
+table thead tr a.asc:hover,
+table thead tr a.desc:hover,
+table thead tr a.sortable:hover {
+  text-decoration: none;
+}
+
+table thead tr a.asc {
+  background-image: url('../img/asc.gif');
+}
+
+table thead tr a.desc {
+  background-image: url('../img/desc.gif');
+}
+
+
+// FORM ACTIONS
+// ---------------------------------------------------------------------------------------------------------------------
+ul.unstyled,
+ol.unstyled {
+  margin: 0;
+  list-style: none;
+}
+
+.form-actions ul.unstyled li,
+.form-actions ol.unstyled li{
+  float:left;
+  margin-left: 5px;
+}
+
+ul.unstyled form,
+ol.unstyled form{
+  margin: 0;
+}
+
+
+// DROP-SHADOWS
+// ---------------------------------------------------------------------------------------------------------------------
+
+.drop-shadow {
+  position:relative;
+}
+
+.drop-shadow:before,
+.drop-shadow:after {
+  content:"";
+  position:absolute;
+  z-index:-1;
+  bottom:15px;
+  left:10px;
+  width:50%;
+  height:20%;
+  max-width:300px;
+  .box-shadow(0 15px 10px @dropShadowColor);
+  .rotate(-3deg)
+}
+
+.drop-shadow:after{
+  right:10px;
+  left:auto;
+  .rotate(3deg)
+}
+
+
+// Lifted corners
+// --------------
+.lifted:before,
+.lifted:after {
+  bottom:15px;
+  left:10px;
+  width:50%;
+  height:20%;
+  max-width:300px;
+  max-height:100px;
+
+  .box-shadow(0 15px 10px @dropShadowColor);
+  .rotate(-3deg);
+}
+
+.lifted:after {
+  right:10px;
+  left:auto;
+
+  .rotate(3deg);
+}

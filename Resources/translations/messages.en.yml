@@ -1,0 +1,23 @@
+# Layout
+obcms.dashboard_title: Dashboard
+obcms.connected_as: You are connected as
+obcms.connected_back: Back to the former user
+
+# Forms
+obcms.form.edit: Save
+obcms.form.new: Save
+obcms.form.back_to_list: Back to the list
+
+# List
+obcms.list.new: New
+obcms.list.action_title: Action
+obcms.list.action_delete: Delete
+obcms.list.action_execute: Execute
+obcms.list.action_confirm: Are you sure about that?
+obcms.list.action_of: of
+obcms.list.action_selected: selected
+
+obcms.pagination.count_prefix: Showing
+obcms.pagination.count_to: to
+obcms.pagination.count_of: of
+obcms.pagination.count_suffix: ''

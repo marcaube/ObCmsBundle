@@ -1,0 +1,63 @@
+{#
+    Bootstrap pagination for KnpMenuBundle
+#}
+
+{% set show_disabled = 1 %}
+
+{% if pageCount > 1 %}
+    <div class="pagination pagination-centered">
+        <ul>
+            {% if first is defined and current != first %}
+                <li class="first">
+                    <a href="{{ path(route, query|merge({(pageParameterName): first})) }}">&lt;&lt;</a>
+                </li>
+            {% elseif show_disabled %}
+                <li class="first disabled">
+                    <a href="#">&lt;&lt;</a>
+                </li>
+            {% endif %}
+    
+            {% if previous is defined %}
+                <li class="previous">
+                    <a href="{{ path(route, query|merge({(pageParameterName): previous})) }}">&lt;</a>
+                </li>
+            {% elseif show_disabled %}
+                <li class="previous disabled">
+                    <a href="#">&lt;</a>
+                </li>
+            {% endif %}
+    
+            {% for page in pagesInRange %}
+                {% if page != current %}
+                    <li class="page">
+                        <a href="{{ path(route, query|merge({(pageParameterName): page})) }}">{{ page }}</a>
+                    </li>
+                {% else %}
+                    <li class="active">
+                        <a href="#">{{ page }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+    
+            {% if next is defined %}
+                <li class="next">
+                    <a href="{{ path(route, query|merge({(pageParameterName): next})) }}">&gt;</a>
+                </li>
+            {% elseif show_disabled %}
+                <li class="next disabled">
+                    <a href="#">&gt;</a>
+                </li>
+            {% endif %}
+    
+            {% if last is defined and current != last %}
+                <li class="last">
+                    <a href="{{ path(route, query|merge({(pageParameterName): last})) }}">&gt;&gt;</a>
+                </li>
+            {% elseif show_disabled %}
+                <li class="last disabled">
+                    <a href="#">&gt;&gt;</a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+{% endif %}

@@ -1,0 +1,90 @@
+{% extends "ObCmsBundle::layout.html.twig" %}
+
+{% use "ObCmsBundle:List:table.html.twig" %}
+
+{% if listFilters is not defined %}
+    {% set listFilters = {} %}
+{% endif %}
+
+{% block content %}
+    <div class="cms-container">
+        <div class="page-header">
+            <h1>{{ (module ~ '.list_title')|trans }}</h1>
+        </div>
+
+        <div class="{% if listFilters|length > 0 %}pull-left with-filters{% endif %}">
+            {% if listSearch %}
+                {% include "ObCmsBundle:List:form_search.html.twig" %}
+            {% endif %}
+
+            {#{% include "ObCmsBundle:List:table.html.twig" %}#}
+            {% block table %}{{ parent() }}{% endblock %}
+
+            {{ knp_pagination_render(entities) }}
+        </div>
+
+        {% if listFilters|length > 0 %}
+            <div class="well well-small pull-right filters">
+                Filters
+            </div>
+        {% endif %}
+
+        <div class="clearfix"></div>
+    </div>
+
+    {% include "ObCmsBundle:List:form_actions.html.twig" %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $(function(){
+            updateCount();
+
+            $('#row-actions').submit(function(e){
+                var action = $('#actions').val()
+                        , submit = true
+                        , checked = $('tbody input[type="checkbox"]:checked').length;
+
+                if (action == 'delete-action' && checked) {
+                    submit = confirm("{% trans %}obcms.list.action_confirm{% endtrans %}");
+                }
+
+                if (!checked  || action == '') {
+                    submit = false;
+                }
+
+                if (!submit || action == '') {
+                    e.preventDefault();
+                }
+            });
+
+            $('#check-all').click(function(){
+                $('tbody input[type="checkbox"]').prop("checked", this.checked);
+                highlightRows();
+                updateCount();
+            });
+
+            $('tbody input[type="checkbox"]').change(function(){
+                highlightRows();
+                updateCount();
+            });
+
+            function highlightRows() {
+                $('tbody input[type="checkbox"]').parents('tr').removeClass('selected');
+                $('tbody input[type="checkbox"]:checked').parents('tr').addClass('selected');
+            }
+
+            function updateCount() {
+                var total = $('tbody input[type="checkbox"]').length
+                        , checked = $('tbody input[type="checkbox"]:checked').length;
+
+                $('#check-count').html(checked
+                        + ' {% trans %}obcms.list.action_of{% endtrans %} '
+                        + total
+                        + ' {% trans %}obcms.list.action_selected{% endtrans %}'
+                );
+            }
+        });
+    </script>
+{% endblock %}
