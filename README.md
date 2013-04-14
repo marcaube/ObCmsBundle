@@ -67,40 +67,40 @@
 ```
 
 ## Create an Admin class
-To use the Cms, you must create an Admin class somewhere in your bundle ...
+To use the Cms, you must create an Admin class somewhere in your bundle. For complete list of options, dive in the Admin class code, it's pretty simple.
 ``` php
-    <?php
+<?php
 
-    namespace Ob\CmsDemoBundle\Admin;
+namespace Ob\CmsDemoBundle\Admin;
 
-    use Ob\CmsBundle\Admin\Admin;
+use Ob\CmsBundle\Admin\Admin;
 
-    class GuitarAdmin extends Admin
+class GuitarAdmin extends Admin
+{
+    public function __construct()
     {
-        public function __construct()
-        {
-            $this->repository = 'ObCmsDemoBundle:Guitar';
-            $this->class = 'Ob\CmsDemoBundle\Entity\Guitar';
-        }
-
-        public function getListDisplay()
-        {
-            return array('name', 'brand', 'strings', 'price', 'online');
-        }
-
-        public function getFormDisplay()
-        {
-            return array('name', 'brand', 'strings', 'price', 'online');
-        }
+        $this->repository = 'ObCmsDemoBundle:Guitar';
+        $this->class = 'Ob\CmsDemoBundle\Entity\Guitar';
     }
+
+    public function getListDisplay()
+    {
+        return array('name', 'brand', 'strings', 'price', 'online');
+    }
+
+    public function getFormDisplay()
+    {
+        return array('name', 'brand', 'strings', 'price', 'online');
+    }
+}
 ```
 
-And register your new admin class as a tagged service ...
+And then register your new admin class as a tagged service. The `alias` tag is used for the menu and the translation prefix.
 ``` yaml
-    # Ob/CmsDemoBundle/Resources/services.yml
-    services:
-        ob_cms_demo.guitar.admin:
-            class: Ob\CmsDemoBundle\Admin\GuitarAdmin
-            tags:
-                -  { name: ob.cms.admin, alias: guitar }
+# Ob/CmsDemoBundle/Resources/services.yml
+services:
+    ob_cms_demo.guitar.admin:
+        class: Ob\CmsDemoBundle\Admin\GuitarAdmin
+        tags:
+            -  { name: ob.cms.admin, alias: guitar }
 ```
