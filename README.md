@@ -37,7 +37,7 @@
 
 2. Run `php composer.phar update "ob/cms-bundle"`
 
-3. Register the bundle in your `app/AppKernel.php`:
+3. Register the bundles in your `app/AppKernel.php`:
 ``` php
     <?php
     ...
@@ -46,6 +46,7 @@
         $bundles = array(
             ...
             new Ob\CmsBundle\ObCmsBundle(),
+            new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
             ...
         );
     ...
