@@ -1,16 +1,16 @@
 parameters:
-  ob.cms.admin_container.class: Ob\CmsBundle\Admin\AdminContainer
+    ob.cms.admin_container.class: Ob\CmsBundle\Admin\AdminContainer
 
 services:
-  ob.cms.twig.extension:
-    class: Ob\CmsBundle\Twig\TwigExtensions
-    tags:
-      - { name: twig.extension }
+    ob.cms.admin_container:
+        class: %ob.cms.admin_container.class%
+        
+    ob.cms.twig.extension:
+        class: Ob\CmsBundle\Twig\TwigExtensions
+        tags:
+            - { name: twig.extension }
 
-  form.type_extension.labelprefix:
-    class: Ob\CmsBundle\Form\LabelPrefixExtension
-    tags:
-      - { name: form.type_extension, alias: field }
-
-  ob.cms.admin_container:
-    class: %ob.cms.admin_container.class%
+    form.type_extension.labelprefix:
+        class: Ob\CmsBundle\Form\LabelPrefixExtension
+        tags:
+            - { name: form.type_extension, alias: field }

@@ -4,9 +4,9 @@
         <table class="table table-bordered table-condensed table-striped">
 
             <thead>
-                {% if listDisplay %}
+                {% if adminClass.listDisplay %}
                     <tr>
-                        <td colspan="{{ listDisplay|length + 1 }}">
+                        <td colspan="{{ adminClass.listDisplay|length + 1 }}">
                             {% include "ObCmsBundle:List:row_actions.html.twig" %}
                         </td>
                     </tr>
@@ -14,9 +14,9 @@
                     <tr>
                         <th class="text-center" style="width:20px;"><input id="check-all" type="checkbox"></th>
                         {% block headers %}
-                            {% for field in listDisplay %}
+                            {% for field in adminClass.listDisplay %}
                                 <th>
-                                    {% if field in listSort %}
+                                    {% if field in adminClass.listSort %}
                                         {{ knp_pagination_sortable(entities, (module ~ '.list_' ~ field)|trans, 'o.' ~ field|lower) }}
                                     {% else %}
                                         {{ (module ~ '.list_' ~ field)|trans }}
@@ -34,7 +34,7 @@
                 {% endif %}
             </thead>
 
-            {% if listDisplay %}
+            {% if adminClass.listDisplay %}
                 <tbody>
                     {% for entity in entities %}
 
@@ -43,19 +43,19 @@
                                 <input type="checkbox" name="action-checkbox[{{ entity.id }}]" value="{{ entity.id }}">
                             </td>
 
-                            {% for k, field in listDisplay %}
+                            {% for k, field in adminClass.listDisplay %}
 
                                 {% set type = varType(attribute(entity, field)) %}
                                 {% set value = attribute(entity, field) %}
 
                                 <td {% if type in ["boolean", "integer"] %}class="text-center"{% endif %}>
 
-                                    {% if field in listLinks or k == 0%}
+                                    {% if field in adminClass.listLinks or k == 0%}
                                         <a href="{{ path('ObCmsBundle_module_edit', { 'id': entity.id, 'name': module }) }}">
                                     {% endif %}
 
                                     {% if type == "object" %}
-                                        {%  if varClass(attribute(entity, field)) == "DateTime" %}
+                                        {%  if varClass(value) == "DateTime" %}
                                             {{ value|date('Y-m-d h:m:s') }}
                                         {% else %}
                                             {{ value }}
@@ -66,7 +66,7 @@
                                         {% block default_cell %}{{ value|raw }}{% endblock %}
                                     {% endif %}
 
-                                    {% if field in listLinks or k == 0 %}
+                                    {% if field in adminClass.listLinks or k == 0 %}
                                         </a>
                                     {% endif %}
 
@@ -76,7 +76,7 @@
 
                     {% else %}
                         <tr>
-                            <td colspan="{{ listDisplay|length + 1 }}" class="text-center">
+                            <td colspan="{{ adminClass.listDisplay|length + 1 }}" class="text-center">
                                 Empty
                             </td>
                         </tr>
@@ -87,7 +87,7 @@
             {% if entities.paginationData.pageCount > 1 %}
                 <tfoot>
                     <tr>
-                        <td colspan="{{ listDisplay|length + 1 }}">
+                        <td colspan="{{ adminClass.listDisplay|length + 1 }}">
                             <span class="muted">
                                 {% include "ObCmsBundle:Paginator:count.html.twig" %}
                             </span>

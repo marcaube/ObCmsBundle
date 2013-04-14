@@ -7,6 +7,8 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
 
+use Ob\CmsBundle\DependencyInjection\Compiler\AdminCompilerPass;
+
 /**
  * This is the class that loads and manages your bundle configuration
  *
@@ -27,6 +29,7 @@ class ObCmsExtension extends Extension
 
         $container->setParameter('itemsPage', $config['itemsPage']);
         $container->setParameter('locales', $config['locales']);
-        $container->setParameter('bundles', $config['bundles']);
+
+        $container->addCompilerPass(new AdminCompilerPass());
     }
 }

@@ -22,7 +22,7 @@
             <p class="help-block">
                 {% for error in errors %}
                     {#<i class="icon icon-warning-sign icon-large"></i>#}
-                    {{ error.messageTemplate|trans(error.messageParameters, 'validators') }}.
+                    {{ error.messageTemplate|trans(error.messageParameters, 'validators') }}
                 {% endfor %}
             </p>
         {% endif %}

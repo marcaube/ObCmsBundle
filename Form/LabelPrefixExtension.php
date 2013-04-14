@@ -32,9 +32,7 @@ class LabelPrefixExtension extends AbstractTypeExtension
             } else {
                 $labelPrefix = null;
             }
-
-            // set an "image_url" variable that will be available when rendering this field
-            $view->set('label', $labelPrefix.$form->getAttribute('label'));
+            $view->vars['label'] = $labelPrefix . $form->getAttribute('label');
         }
     }
 

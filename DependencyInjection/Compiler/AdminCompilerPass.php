@@ -10,15 +10,24 @@ class AdminCompilerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        if (false === $container->hasDefinition('ob.cms.admin_container')) {
+        if (!$container->hasDefinition('ob.cms.admin_container')) {
             return;
         }
 
-        $definition = $container->getDefinition('ob.cms.admin_container');
+        $definition = $container->getDefinition(
+            'ob.cms.admin_container'
+        );
 
-        foreach ($container->findTaggedServiceIds('ob.cms.admin') as $id => $tagAttributes) {
+        $taggedServices = $container->findTaggedServiceIds(
+            'ob.cms.admin'
+        );
+
+        foreach ($taggedServices as $id => $tagAttributes) {
             foreach ($tagAttributes as $attributes) {
-                $definition->addMethodCall('addClass', array(new Reference($id), $attributes["alias"]));
+                $definition->addMethodCall(
+                    'addClass',
+                    array(new Reference($id), $attributes["alias"])
+                );
             }
         }
     }

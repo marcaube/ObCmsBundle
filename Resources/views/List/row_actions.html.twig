@@ -1,7 +1,7 @@
 <label class="control-label muted" for="actions">{% trans %}obcms.list.action_title{% endtrans %} :&nbsp;</label>
 <select name="action" id="actions" class="input-medium">
     <option value="">----------</option>
-    {%  for action in listActions %}
+    {%  for action in adminClass.listActions %}
         <option value="{{ action }}">{{ ( module ~ '.action_' ~ action)|trans }}</option>
     {% endfor %}
     <option value="delete-action">{% trans %}obcms.list.action_delete{% endtrans %}</option>

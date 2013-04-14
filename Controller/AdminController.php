@@ -3,12 +3,13 @@
 namespace Ob\CmsBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 use Ob\CmsBundle\Form\AdminType;
-use Tco\Cms\UserBundle\Entity\User;
+use Ob\CmsBundle\Admin\AdminInterface;
 
 class AdminController extends Controller
 {
@@ -21,12 +22,8 @@ class AdminController extends Controller
      */
     public function menuAction($request)
     {
-        // Get the menu from the config or defaults to the list of modules
-//        $menu = $this->container->getParameter('menu');
-//        if (!$menu) {
-            $menu = $this->container->getParameter('bundles');
-            $flat = true;
-//        }
+        $menu = $this->get('ob.cms.admin_container')->getClasses();
+        $flat = true;
 
         // Get the current module from the URI
         $current = explode('?', $this->container->get('request')->server->get('REQUEST_URI'));
@@ -71,11 +68,7 @@ class AdminController extends Controller
      */
     public function dashboardAction()
     {
-        $bundles = $this->container->getParameter('bundles');
-
-        $template = 'ObCmsBundle:Admin:' . (empty($bundles) ? 'welcome.html.twig' : 'dashboard.html.twig');
-
-        return $this->render($template);
+        return $this->render('ObCmsBundle:Admin:dashboard.html.twig');
     }
 
 
@@ -83,40 +76,23 @@ class AdminController extends Controller
      * Display the listing page.
      * Handles searches, sorting, actions and pagination on the list of entities.
      *
+     * @param Request $request
      * @param string $name
      *
      * @return Response
      */
-    public function listAction($name)
+    public function listAction(Request $request, $name)
     {
-        // Forward action if Controller is Overriden
-        $this->executeForward($name, 'listController');
-
-        // Execute actions on selected rows
         $this->executeAction($name);
 
-        // Get the sorted and paginated entities
-        $entities = $this->getEntities($name);
+        $adminClass = $this->get('ob.cms.admin_container')->getClass($name);
+        $entities = $this->getEntities($adminClass);
 
-        // Retreive the list of params
-        $listDisplay = $this->getParamOrNull($name, 'listDisplay');
-        $listLinks   = $this->getParamOrNull($name, 'listLinks');
-        $listSort    = $this->getParamOrNull($name, 'listSort');
-        $listActions = $this->getParamOrNull($name, 'listActions');
-        $listSearch  = $this->getParamOrNull($name, 'listSearch');
-        $template    = $this->getParamOrNull($name, 'listTemplate');
-
-        $template = $template ? : 'ObCmsBundle:List:list.html.twig';
-
-        return $this->render($template, array(
-            'module'      => $name,
+        return $this->render('ObCmsBundle:List:list.html.twig', array(
+            'module'     => $name,
+            'adminClass' => $adminClass,
             'entities'    => $entities,
-            'listDisplay' => $listDisplay,
-            'listLinks'   => $listLinks,
-            'listSort'    => $listSort,
-            'listActions' => $listActions,
-            'listSearch'  => count($listSearch) > 0,
-            'search'      => $this->get('request')->query->get('search') ? : null,
+            'search'      => $request->query->get('search') ? : null,
         ));
     }
 
@@ -130,21 +106,13 @@ class AdminController extends Controller
      */
     public function newAction($name)
     {
-        // Forward action if Controller is Overriden
-        $this->executeForward($name, 'newController');
-
-        // Create a new entity
-        $entity = $this->getParamOrNull($name, 'entity');
+        $adminClass = $this->get('ob.cms.admin_container')->getClass($name);
+        $entity = $adminClass->getClass();
         $entity = new $entity;
 
-        // Create the form
-        $formDisplay = $this->getParamOrNull($name, 'formDisplay');
-        $form = $this->createForm(new AdminType($formDisplay), $entity);
+        $form = $this->createForm(new AdminType($adminClass->getFormDisplay()), $entity);
 
-        $template = $this->getParamOrNull($name, 'newTemplate');
-        $template = $template ? : 'ObCmsBundle:New:new.html.twig';
-
-        return $this->render($template, array(
+        return $this->render('ObCmsBundle:New:new.html.twig', array(
             'module' => $name,
             'entity' => $entity,
             'form'   => $form->createView()
@@ -155,28 +123,20 @@ class AdminController extends Controller
     /**
      * Handle the creation of a new entity
      *
+     * @param Request $request
      * @param string $name
      *
      * @return RedirectResponse|Response
      */
-    public function createAction($name)
+    public function createAction(Request $request, $name)
     {
-        // Forward action if Controller is Overriden
-        $this->executeForward($name, 'createController');
-
-        // Create a new entity
-        $entity = $this->getParamOrNull($name, 'entity');
+        $adminClass = $this->get('ob.cms.admin_container')->getClass($name);
+        $entity = $adminClass->getClass();
         $entity = new $entity;
 
-        // Create the form
-        $formDisplay = $this->getParamOrNull($name, 'formDisplay');
-        $form = $this->createForm(new AdminType($formDisplay), $entity);
+        $form = $this->createForm(new AdminType($adminClass->getFormDisplay()), $entity);
 
-        // Bind the form with the request
-        $request = $this->getRequest();
-        $form->bindRequest($request);
-
-        if ($form->isValid()) {
+        if ($form->bind($request)->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($entity);
             $em->flush();
@@ -189,10 +149,7 @@ class AdminController extends Controller
             )));
         }
 
-        $template = $this->getParamOrNull($name, 'newTemplate');
-        $template = $template ? : 'ObCmsBundle:New:new.html.twig';
-
-        return $this->render($template, array(
+        return $this->render('ObCmsBundle:New:new.html.twig', array(
             'module'      => $name,
             'entity'      => $entity,
             'form'        => $form->createView(),
@@ -212,28 +169,20 @@ class AdminController extends Controller
      */
     public function editAction($name, $id)
     {
-        // Forward action if Controller is Overriden
-        $this->executeForward($name, 'editController');
-
-        // Retreive the entity
         $em = $this->getDoctrine()->getManager();
-        $entity = $em->getRepository($this->getParamOrNull($name, 'repository'))->find($id);
+        $adminClass = $this->get('ob.cms.admin_container')->getClass($name);
+        $entity = $em->getRepository($adminClass->getRepository())->find($id);
 
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find ' . $name . ' entity.');
         }
 
-        // Create the form
-        $form = $this->getParamOrNull($name, 'editForm') ? : 'Ob\CmsBundle\Form\AdminType';
-        $editForm = $this->createForm(new $form($this->getParamOrNull($name, 'formDisplay')), $entity);
+        $editForm = $this->createForm(new AdminType($adminClass->getFormDisplay()), $entity);
 
-        $template = $this->getParamOrNull($name, 'editTemplate');
-        $template = $template ? : 'ObCmsBundle:Edit:edit.html.twig';
-
-        return $this->render($template, array(
+        return $this->render('ObCmsBundle:Edit:edit.html.twig', array(
             'module' => $name,
             'entity' => $entity,
-            'edit_form'   => $editForm->createView(),
+            'edit_form' => $editForm->createView(),
         ));
     }
 
@@ -241,34 +190,27 @@ class AdminController extends Controller
     /**
      * Update an entity
      *
-     * @param string $name
-     * @param int    $id
+     * @param Request $request
+     * @param string  $name
+     * @param int     $id
      *
      * @return RedirectResponse|Response
      *
      * @throws NotFoundHttpException
      */
-    public function updateAction($name, $id)
+    public function updateAction(Request $request, $name, $id)
     {
-        // Forward action if Controller is Overriden
-        $this->executeForward($name, 'updateController');
-
-        // Retreive the entity
         $em = $this->getDoctrine()->getManager();
-        $entity = $em->getRepository($this->getParamOrNull($name, 'repository'))->find($id);
+        $adminClass = $this->get('ob.cms.admin_container')->getClass($name);
+        $entity = $em->getRepository($adminClass->getRepository())->find($id);
 
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find ' . $name . ' entity.');
         }
 
-        // Create the form
-        $editForm = $this->createForm(new AdminType($this->getParamOrNull($name, 'formDisplay')), $entity);
+        $editForm = $this->createForm(new AdminType($adminClass->getFormDisplay()), $entity);
 
-        // Bind the form with the request
-        $request = $this->getRequest();
-        $editForm->bindRequest($request);
-
-        if ($editForm->isValid()) {
+        if ($editForm->bind($request)->isValid()) {
             $em->persist($entity);
             $em->flush();
 
@@ -277,62 +219,11 @@ class AdminController extends Controller
             return $this->redirect($this->generateUrl('ObCmsBundle_module_edit', array('name' => $name, 'id' => $id)));
         }
 
-        $template = $this->getParamOrNull($name, 'editTemplate');
-        $template = $template ? : 'ObCmsBundle:Edit:edit.html.twig';
-
-        return $this->render($template, array(
+        return $this->render('ObCmsBundle:Edit:edit.html.twig', array(
             'module'    => $name,
             'entity'    => $entity,
             'edit_form' => $editForm->createView(),
         ));
-    }
-
-
-    /**
-     * Get the value of a param for a certain module or return null
-     *
-     * @param string $name
-     * @param string $param
-     *
-     * @return null
-     */
-    private function getParamOrNull($name, $param)
-    {
-        $params = $this->container->getParameter('bundles');
-
-        return isset($params[$name][$param]) ? $params[$name][$param] : null;
-    }
-
-
-    /**
-     * Get the value of a param for a certain module or return an empty array
-     *
-     * @param string $name
-     * @param string $param
-     *
-     * @return array
-     */
-    private function getParamOrArray($name, $param)
-    {
-        return $this->getParamOrNull($name, $param) ? : array();
-    }
-
-
-    /**
-     * Forwards the action to another controller if the param is set
-     *
-     * @param string $name
-     * @param string $controller
-     *
-     * @return Response
-     */
-    private function executeForward($name, $controller)
-    {
-        $forward = $this->getParamOrNull($name, $controller);
-
-        if (isset($forward)) {
-            return $this->forward($forward);
-        }
     }
 
 
@@ -351,8 +242,9 @@ class AdminController extends Controller
             $ids = array_keys($ids);
 
             if(!empty($ids) and $action != '') {
+                $adminClass = $this->get('ob.cms.admin_container')->getClass($name);
                 $em = $this->getDoctrine()->getManager();
-                $entities = $em->getRepository($this->getParamOrNull($name, 'repository'))->findById($ids);
+                $entities = $em->getRepository($adminClass->getRepository())->findById($ids);
 
                 foreach($entities as $entity) {
                     // TODO: check if function exists or raise Exception
@@ -372,39 +264,73 @@ class AdminController extends Controller
     /**
      * Get the list of filtered, sorted and paginated entities
      *
-     * @param string $name
+     * @param AdminInterface $adminClass
+     *
+     * @return mixed
      */
-    private function getEntities($name) {
-        // Start to build the query
-        $repository = $this->getDoctrine()->getRepository($this->getParamOrNull($name, 'repository'));
+    private function getEntities(AdminInterface $adminClass) {
+        $paginator = $this->get('knp_paginator');
+        $repository = $this->getDoctrine()->getRepository($adminClass->getRepository());
+        $request = $this->get('request');
+
         $query = $repository->createQueryBuilder('o');
 
-        // Search query and list of search fields
-        $search = $this->get('request')->query->get('search') ? : null;
-        $listSearch = $this->getParamOrArray($name, 'listSearch');
+        // Search
+        $this->buildSearch($adminClass->getListSearch(), $request->query->get('search') ? : null, $query);
 
-        // If there is a search query, build the where clause for every searchFields
-        if(count($listSearch) > 0 && $search) {
-            foreach($listSearch as $k => $field) {
+        // Order by
+        $this->buildOrderBy($adminClass->getOrderBy(), $query);
+
+        return $paginator->paginate(
+            $query,
+            $request->query->get('page', 1),
+            $adminClass->getItemsPage()
+        );
+    }
+
+
+    /**
+     * Build the order by clause
+     *
+     * @param $orderByFields
+     * @param $query
+     */
+    private function buildOrderBy($orderByFields, $query)
+    {
+        if (count($orderByFields) > 0) {
+            foreach($orderByFields as $k => $field) {
+                if($k == 0) {
+                    $query->orderBy("o.$field");
+                } else {
+                    $query->addOrderBy("o.$field");
+                }
+            }
+        }
+    }
+
+
+    /**
+     * Build the text search clause
+     *
+     * @param $searchFields
+     * @param $searchQuery
+     * @param $query
+     */
+    private function buildSearch($searchFields, $searchQuery, $query)
+    {
+        if (count($searchFields) > 0 && $searchQuery) {
+            $params = array();
+
+            foreach($searchFields as $k => $field) {
                 if($k == 0) {
                     $query->where($query->expr()->like("o.$field", "?$k"));
                 } else {
                     $query->orWhere($query->expr()->like("o.$field", "?$k"));
                 }
-                $listSearch[$k] = '%' .$search . '%';
+                $params[$k] = '%' .$searchQuery . '%';
             }
-            $query->setParameters($listSearch);
+
+            $query->setParameters($params);
         }
-
-        // Paginate the result
-        $paginator = $this->get('knp_paginator');
-        $entities = $paginator->paginate(
-            $query,
-            $this->get('request')->query->get('p', 1),
-            $this->getParamOrNull($name, 'itemsPage') ? : $this->container->getParameter('itemsPage')
-        );
-
-        return $entities;
     }
-
 }
