@@ -10,21 +10,27 @@ interface AdminInterface
 
     function getRepository();
 
-    function getItemsPage();
+    function listPageItems();
 
-    function getListDisplay();
+    function listDisplay();
 
-    function getListLinks();
+    function listLinks();
 
-    function getListSort();
+    function listSort();
 
-    function getListSearch();
+    function listSearch();
 
-    function getListActions();
+    function listActions();
 
-    function getOrderBy();
+    function listOrderBy();
 
-    function getEditForm();
+    function formType();
 
-    function getFormDisplay();
+    function formDisplay();
+
+    function listTemplate();
+
+    function newTemplate();
+
+    function editTemplate();
 }

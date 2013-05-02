@@ -77,12 +77,12 @@ class GuitarAdmin extends Admin
         $this->class = 'Ob\CmsDemoBundle\Entity\Guitar';
     }
 
-    public function getListDisplay()
+    public function listDisplay()
     {
         return array('name', 'brand', 'strings', 'price', 'online');
     }
 
-    public function getFormDisplay()
+    public function formDisplay()
     {
         return array('name', 'brand', 'strings', 'price', 'online');
     }

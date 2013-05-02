@@ -88,7 +88,9 @@ class AdminController extends Controller
         $adminClass = $this->get('ob.cms.admin_container')->getClass($name);
         $entities = $this->getEntities($adminClass);
 
-        return $this->render('ObCmsBundle:List:list.html.twig', array(
+        $template = $adminClass->listTemplate() ? : 'ObCmsBundle:List:list.html.twig';
+
+        return $this->render($template, array(
             'module'     => $name,
             'adminClass' => $adminClass,
             'entities'    => $entities,
@@ -110,9 +112,12 @@ class AdminController extends Controller
         $entity = $adminClass->getClass();
         $entity = new $entity;
 
-        $form = $this->createForm(new AdminType($adminClass->getFormDisplay()), $entity);
+        $formType = $adminClass->formType() ? : new AdminType($adminClass->formDisplay());
+        $form = $this->createForm($formType, $entity);
 
-        return $this->render('ObCmsBundle:New:new.html.twig', array(
+        $template = $adminClass->newTemplate() ? : 'ObCmsBundle:New:new.html.twig';
+
+        return $this->render($template, array(
             'module' => $name,
             'entity' => $entity,
             'form'   => $form->createView()
@@ -134,7 +139,8 @@ class AdminController extends Controller
         $entity = $adminClass->getClass();
         $entity = new $entity;
 
-        $form = $this->createForm(new AdminType($adminClass->getFormDisplay()), $entity);
+        $formType = $adminClass->formType() ? : new AdminType($adminClass->formDisplay());
+        $form = $this->createForm($formType, $entity);
 
         if ($form->bind($request)->isValid()) {
             $em = $this->getDoctrine()->getManager();
@@ -149,7 +155,9 @@ class AdminController extends Controller
             )));
         }
 
-        return $this->render('ObCmsBundle:New:new.html.twig', array(
+        $template = $adminClass->newTemplate() ? : 'ObCmsBundle:New:new.html.twig';
+
+        return $this->render($template, array(
             'module'      => $name,
             'entity'      => $entity,
             'form'        => $form->createView(),
@@ -177,12 +185,16 @@ class AdminController extends Controller
             throw $this->createNotFoundException('Unable to find ' . $name . ' entity.');
         }
 
-        $editForm = $this->createForm(new AdminType($adminClass->getFormDisplay()), $entity);
+        $formType = $adminClass->formType() ? : new AdminType($adminClass->formDisplay());
+        $editForm = $this->createForm($formType, $entity);
 
-        return $this->render('ObCmsBundle:Edit:edit.html.twig', array(
+        $template = $adminClass->editTemplate() ? : 'ObCmsBundle:Edit:edit.html.twig';
+
+        return $this->render($template, array(
             'module' => $name,
             'entity' => $entity,
             'edit_form' => $editForm->createView(),
+            'previous'  =>  $this->get('request')->server->get('HTTP_REFERER')? : null
         ));
     }
 
@@ -208,7 +220,7 @@ class AdminController extends Controller
             throw $this->createNotFoundException('Unable to find ' . $name . ' entity.');
         }
 
-        $editForm = $this->createForm(new AdminType($adminClass->getFormDisplay()), $entity);
+        $editForm = $this->createForm(new AdminType($adminClass->formDisplay()), $entity);
 
         if ($editForm->bind($request)->isValid()) {
             $em->persist($entity);
@@ -222,7 +234,7 @@ class AdminController extends Controller
         return $this->render('ObCmsBundle:Edit:edit.html.twig', array(
             'module'    => $name,
             'entity'    => $entity,
-            'edit_form' => $editForm->createView(),
+            'edit_form' => $editForm->createView()
         ));
     }
 
@@ -276,15 +288,15 @@ class AdminController extends Controller
         $query = $repository->createQueryBuilder('o');
 
         // Search
-        $this->buildSearch($adminClass->getListSearch(), $request->query->get('search') ? : null, $query);
+        $this->buildSearch($adminClass->listSearch(), $request->query->get('search') ? : null, $query);
 
         // Order by
-        $this->buildOrderBy($adminClass->getOrderBy(), $query);
+        $this->buildOrderBy($adminClass->listOrderBy(), $query);
 
         return $paginator->paginate(
             $query,
             $request->query->get('page', 1),
-            $adminClass->getItemsPage()
+            $adminClass->listPageItems()
         );
     }
 
@@ -300,9 +312,9 @@ class AdminController extends Controller
         if (count($orderByFields) > 0) {
             foreach($orderByFields as $k => $field) {
                 if($k == 0) {
-                    $query->orderBy("o.$field");
+                    $query->orderBy("o.$field", 'DESC');
                 } else {
-                    $query->addOrderBy("o.$field");
+                    $query->addOrderBy("o.$field", 'DESC');
                 }
             }
         }

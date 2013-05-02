@@ -100,49 +100,64 @@ abstract class Admin implements AdminInterface
     {
         return $this->repository;
     }
-
-    public function getItemsPage()
+    
+    public function listPageItems()
     {
         return 25;
     }
 
-    public function getListDisplay()
+    public function listDisplay()
     {
         return array();
     }
 
-    public function getListLinks()
+    public function listLinks()
     {
         return array();
     }
 
-    public function getListSort()
+    public function listSort()
     {
         return array();
     }
 
-    public function getListSearch()
+    public function listSearch()
     {
         return array();
     }
 
-    public function getListActions()
+    public function listActions()
     {
         return array();
     }
 
-    public function getOrderBy()
+    public function listOrderBy()
     {
         return array();
     }
 
-    public function getEditForm()
+    public function formType()
     {
         return null;
     }
 
-    public function getFormDisplay()
+    public function formDisplay()
     {
         return array();
+    }
+
+    public function listTemplate()
+    {
+        return null;
+    }
+
+    public function newTemplate()
+    {
+        return null;
+    }
+
+    public function editTemplate()
+    {
+        return null;
     }
 }
