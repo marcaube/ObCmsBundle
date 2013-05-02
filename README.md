@@ -52,14 +52,7 @@
     ...
 ```
 
-4. For the pagination to work properly, add this somewhere in your config
-``` yaml
-    knp_paginator:
-        template:
-            pagination: ObCmsBundle:Paginator:sliding.html.twig
-```
-
-5. Last thing but not least is to import the routing
+4. Last thing but not least is to import the routing
 ``` yaml
     # app/config/routing.yml
     ob_cms:

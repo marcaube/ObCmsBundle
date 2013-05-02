@@ -16,7 +16,7 @@
             {#{% include "ObCmsBundle:List:table.html.twig" %}#}
             {% block table %}{{ parent() }}{% endblock %}
 
-            {{ knp_pagination_render(entities) }}
+            {{ knp_pagination_render(entities, 'ObCmsBundle:Paginator:sliding.html.twig') }}
         </div>
 
         <div class="clearfix"></div>
