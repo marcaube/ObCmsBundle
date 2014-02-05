@@ -16,7 +16,7 @@
                     <a href="#">&lt;&lt;</a>
                 </li>
             {% endif %}
-    
+
             {% if previous is defined %}
                 <li class="previous">
                     <a href="{{ path(route, query|merge({(pageParameterName): previous})) }}">&lt;</a>
@@ -26,7 +26,7 @@
                     <a href="#">&lt;</a>
                 </li>
             {% endif %}
-    
+
             {% for page in pagesInRange %}
                 {% if page != current %}
                     <li class="page">
@@ -38,7 +38,7 @@
                     </li>
                 {% endif %}
             {% endfor %}
-    
+
             {% if next is defined %}
                 <li class="next">
                     <a href="{{ path(route, query|merge({(pageParameterName): next})) }}">&gt;</a>
@@ -48,7 +48,7 @@
                     <a href="#">&gt;</a>
                 </li>
             {% endif %}
-    
+
             {% if last is defined and current != last %}
                 <li class="last">
                     <a href="{{ path(route, query|merge({(pageParameterName): last})) }}">&gt;&gt;</a>

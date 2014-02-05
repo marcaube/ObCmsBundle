@@ -4,7 +4,7 @@ parameters:
 services:
     ob.cms.admin_container:
         class: %ob.cms.admin_container.class%
-        
+
     ob.cms.twig.extension:
         class: Ob\CmsBundle\Twig\TwigExtensions
         tags:

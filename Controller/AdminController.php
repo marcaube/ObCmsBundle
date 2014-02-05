@@ -37,7 +37,6 @@ class AdminController extends Controller
         ));
     }
 
-
     /**
      * Render the locale switcher if there is more than one locale available
      *
@@ -50,7 +49,7 @@ class AdminController extends Controller
         $locales = $this->container->getParameter('locales');
         $locale = $request->query->get('_locale')?:null;
 
-        if(in_array($locale, $locales)) {
+        if (in_array($locale, $locales)) {
             $this->get('session')->setLocale($locale);
         }
 
@@ -59,7 +58,6 @@ class AdminController extends Controller
             'locales' =>  $locales,
         ));
     }
-
 
     /**
      * Display the homepage/dashboard
@@ -71,13 +69,12 @@ class AdminController extends Controller
         return $this->render('ObCmsBundle:Admin:dashboard.html.twig');
     }
 
-
     /**
      * Display the listing page.
      * Handles searches, sorting, actions and pagination on the list of entities.
      *
      * @param Request $request
-     * @param string $name
+     * @param string  $name
      *
      * @return Response
      */
@@ -97,7 +94,6 @@ class AdminController extends Controller
             'search'      => $request->query->get('search') ? : null,
         ));
     }
-
 
     /**
      * Display the form to create a new entity
@@ -124,12 +120,11 @@ class AdminController extends Controller
         ));
     }
 
-
     /**
      * Handle the creation of a new entity
      *
      * @param Request $request
-     * @param string $name
+     * @param string  $name
      *
      * @return RedirectResponse|Response
      */
@@ -167,7 +162,6 @@ class AdminController extends Controller
         ));
     }
 
-
     /**
      * Display the form to edit an entity
      *
@@ -200,7 +194,6 @@ class AdminController extends Controller
             'previous'  =>  $this->get('request')->server->get('HTTP_REFERER')? : null
         ));
     }
-
 
     /**
      * Update an entity
@@ -244,7 +237,6 @@ class AdminController extends Controller
         ));
     }
 
-
     /**
      * Executes an action on selected table rows
      *
@@ -259,14 +251,14 @@ class AdminController extends Controller
             $ids = $request->request->get('action-checkbox')?:array();
             $ids = array_keys($ids);
 
-            if(!empty($ids) and $action != '') {
+            if (!empty($ids) and $action != '') {
                 $adminClass = $this->get('ob.cms.admin_container')->getClass($name);
                 $em = $this->getDoctrine()->getManager();
                 $entities = $em->getRepository($adminClass->getRepository())->findById($ids);
 
-                foreach($entities as $entity) {
+                foreach ($entities as $entity) {
                     // TODO: check if function exists or raise Exception
-                    if($action == 'delete-action') {
+                    if ($action == 'delete-action') {
                         $em->remove($entity);
                     } else {
                         $entity->{$action}();
@@ -277,7 +269,6 @@ class AdminController extends Controller
             }
         }
     }
-
 
     /**
      * Get the list of filtered, sorted and paginated entities
@@ -307,7 +298,6 @@ class AdminController extends Controller
         );
     }
 
-
     /**
      * Build the order by clause
      *
@@ -317,8 +307,8 @@ class AdminController extends Controller
     private function buildOrderBy($orderByFields, $query)
     {
         if (count($orderByFields) > 0) {
-            foreach($orderByFields as $k => $field) {
-                if($k == 0) {
+            foreach ($orderByFields as $k => $field) {
+                if ($k == 0) {
                     $query->orderBy("o.$field", 'DESC');
                 } else {
                     $query->addOrderBy("o.$field", 'DESC');
@@ -326,7 +316,6 @@ class AdminController extends Controller
             }
         }
     }
-
 
     /**
      * Build the text search clause
@@ -340,8 +329,8 @@ class AdminController extends Controller
         if (count($searchFields) > 0 && $searchQuery) {
             $params = array();
 
-            foreach($searchFields as $k => $field) {
-                if($k == 0) {
+            foreach ($searchFields as $k => $field) {
+                if ($k == 0) {
                     $query->where($query->expr()->like("o.$field", "?$k"));
                 } else {
                     $query->orWhere($query->expr()->like("o.$field", "?$k"));

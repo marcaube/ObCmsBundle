@@ -2,35 +2,33 @@
 
 namespace Ob\CmsBundle\Admin;
 
-use Symfony\Component\HttpFoundation\Request;
-
 interface AdminInterface
 {
-    function getClass();
+    public function getClass();
 
-    function getRepository();
+    public function getRepository();
 
-    function listPageItems();
+    public function listPageItems();
 
-    function listDisplay();
+    public function listDisplay();
 
-    function listLinks();
+    public function listLinks();
 
-    function listSort();
+    public function listSort();
 
-    function listSearch();
+    public function listSearch();
 
-    function listActions();
+    public function listActions();
 
-    function listOrderBy();
+    public function listOrderBy();
 
-    function formType();
+    public function formType();
 
-    function formDisplay();
+    public function formDisplay();
 
-    function listTemplate();
+    public function listTemplate();
 
-    function newTemplate();
+    public function newTemplate();
 
-    function editTemplate();
+    public function editTemplate();
 }

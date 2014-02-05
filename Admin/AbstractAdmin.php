@@ -95,7 +95,7 @@ abstract class AbstractAdmin implements AdminInterface
     {
         return $this->repository;
     }
-    
+
     public function listPageItems()
     {
         return 25;

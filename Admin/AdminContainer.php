@@ -34,8 +34,7 @@ class AdminContainer
     {
         if (array_key_exists($alias, $this->classes)) {
             return $this->classes[$alias];
-        }
-        else {
+        } else {
             return null;
         }
     }
