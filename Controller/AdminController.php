@@ -86,7 +86,7 @@ class AdminController extends Controller
         $this->executeAction($name);
 
         $adminClass = $this->get('ob.cms.admin_container')->getClass($name);
-        $entities = $this->getEntities($adminClass);
+        $entities = $this->getEntities($adminClass, $request);
 
         $template = $adminClass->listTemplate() ? : 'ObCmsBundle:List:list.html.twig';
 
@@ -147,7 +147,10 @@ class AdminController extends Controller
             $em->persist($entity);
             $em->flush();
 
-            $this->get('session')->setFlash('success', $name . '.create.success');
+            $this->get('session')->getFlashBag()->add(
+                'success',
+                $name . '.create.success'
+            );
 
             return $this->redirect($this->generateUrl('ObCmsBundle_module_edit', array(
                 'name' => $name,
@@ -226,7 +229,10 @@ class AdminController extends Controller
             $em->persist($entity);
             $em->flush();
 
-            $this->get('session')->setFlash('success', $name . '.edit.success');
+            $this->get('session')->getFlashBag()->add(
+                'success',
+                $name . '.edit.success'
+            );
 
             return $this->redirect($this->generateUrl('ObCmsBundle_module_edit', array('name' => $name, 'id' => $id)));
         }
@@ -277,13 +283,14 @@ class AdminController extends Controller
      * Get the list of filtered, sorted and paginated entities
      *
      * @param AdminInterface $adminClass
+     * @param Request        $request
      *
      * @return mixed
      */
-    private function getEntities(AdminInterface $adminClass) {
-        $paginator = $this->get('knp_paginator');
-        $repository = $this->getDoctrine()->getRepository($adminClass->getRepository());
-        $request = $this->get('request');
+    private function getEntities(AdminInterface $adminClass, Request $request)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $repository = $entityManager->getRepository($adminClass->getRepository());
 
         $query = $repository->createQueryBuilder('o');
 
@@ -293,7 +300,7 @@ class AdminController extends Controller
         // Order by
         $this->buildOrderBy($adminClass->listOrderBy(), $query);
 
-        return $paginator->paginate(
+        return $this->get('knp_paginator')->paginate(
             $query,
             $request->query->get('page', 1),
             $adminClass->listPageItems()
