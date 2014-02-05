@@ -26,8 +26,9 @@
 
 
 ## Installation
-1. Add this line to your `composer.json`
-``` yaml
+* Add this line to your `composer.json`
+
+```yaml
     "require": {
         ...
         "ob/cms-bundle": "dev-master",
@@ -35,10 +36,11 @@
     },
 ```
 
-2. Run `php composer.phar update "ob/cms-bundle"`
+* Run `php composer.phar update "ob/cms-bundle"`
 
-3. Register the bundles in your `app/AppKernel.php`:
-``` php
+* Register the bundles in your `app/AppKernel.php`:
+
+```php
     <?php
     ...
     public function registerBundles()
@@ -52,8 +54,9 @@
     ...
 ```
 
-4. Last thing but not least is to import the routing
-``` yaml
+* Last thing but not least is to import the routing
+
+```yaml
     # app/config/routing.yml
     ob_cms:
         resource: "@ObCmsBundle/Resources/config/routing.yml"
@@ -61,8 +64,10 @@
 ```
 
 ## Create an Admin class
-To use the Cms, you must create an Admin class somewhere in your bundle. For complete list of options, dive in the Admin class code, it's pretty simple.
-``` php
+To use the Cms, you must create an Admin class somewhere in your bundle. For complete list of options, dive in the Admin
+class code, it's pretty simple.
+
+```php
 <?php
 
 namespace Ob\CmsDemoBundle\Admin;
@@ -89,8 +94,10 @@ class GuitarAdmin extends Admin
 }
 ```
 
-And then register your new admin class as a tagged service. The `alias` tag is used for the menu and the translation prefix.
-``` yaml
+And then register your new admin class as a tagged service. The `alias` tag is used for the menu and the translation
+prefix.
+
+```yaml
 # Ob/CmsDemoBundle/Resources/services.yml
 services:
     ob_cms_demo.guitar.admin:
