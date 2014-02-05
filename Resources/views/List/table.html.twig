@@ -56,7 +56,7 @@
 
                                     {% if type == "object" %}
                                         {%  if varClass(value) == "DateTime" %}
-                                            {{ value|date('Y-m-d h:m:s') }}
+                                            {{ value|date('Y-m-d h:i:s') }}
                                         {% else %}
                                             {{ value }}
                                         {% endif %}
