@@ -67,7 +67,7 @@ To use the Cms, you must create an Admin class somewhere in your bundle. For com
 
 namespace Ob\CmsDemoBundle\Admin;
 
-use Ob\CmsBundle\Admin\Admin;
+use Ob\CmsBundle\Admin\AbstractAdmin as Admin;
 
 class GuitarAdmin extends Admin
 {

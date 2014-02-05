@@ -6,12 +6,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 use Ob\CmsBundle\Admin\AdminInterface;
 
-/**
- * Class Admin
- *
- * @package Ob\CmsBundle\Admin
- */
-abstract class Admin implements AdminInterface
+abstract class AbstractAdmin implements AdminInterface
 {
     /**
      * The entity/document class managed by the admin
@@ -21,7 +16,7 @@ abstract class Admin implements AdminInterface
     protected $class;
 
     /**
-     * The repository used to query entites or documents
+     * The repository used to query entities or documents
      *
      * @var string
      */

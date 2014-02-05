@@ -4,13 +4,6 @@ namespace Ob\CmsBundle\Admin;
 
 use Ob\CmsBundle\Admin\AdminInterface;
 
-/**
- * Class AdminContainer
- *
- * Holds all the tagged
- *
- * @package Ob\CmsBundle\Admin
- */
 class AdminContainer
 {
     /**
