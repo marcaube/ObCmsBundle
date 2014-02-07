@@ -13,7 +13,6 @@
                 {% include "ObCmsBundle:List:form_search.html.twig" %}
             {% endif %}
 
-            {#{% include "ObCmsBundle:List:table.html.twig" %}#}
             {% block table %}{{ parent() }}{% endblock %}
 
             {{ knp_pagination_render(entities, 'ObCmsBundle:Paginator:sliding.html.twig') }}
@@ -61,8 +60,8 @@
             });
 
             function highlightRows() {
-                $('tbody input[type="checkbox"]').parents('tr').removeClass('selected');
-                $('tbody input[type="checkbox"]:checked').parents('tr').addClass('selected');
+                $('tbody input[type="checkbox"]').parents('tr').removeClass('warning');
+                $('tbody input[type="checkbox"]:checked').parents('tr').addClass('warning');
             }
 
             function updateCount() {

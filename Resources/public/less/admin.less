@@ -1,11 +1,26 @@
-@import "bootstrap-2.1.1/bootstrap.less";
+//@import "bootstrap-2.1.1/bootstrap.less";
 
 body{
   padding: 60px 0 40px;
-  background: #f1f1f1; //url('../img/bg/furley_bg.png');
+  background: #f1f1f1;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
+.container {
+  max-width: 960px;
+}
+
+.clearfix() {
+    &:before,
+    &:after {
+      content: " ";
+      display: table;
+    }
+
+  &:after {
+    clear: both;
+  }
+}
 
 // GLOBAL VALUES
 // ---------------------------------------------------------------------------------------------------------------------
@@ -27,23 +42,23 @@ body{
 // Container
 .cms-wrapper {
   background-color: #fff;
-  .box-shadow(0 1px 3px @dropShadowColor);
+  box-shadow: 0 1px 3px @dropShadowColor;
 }
 
 // Content
 .space,
-.cms-container{
+.cms-container {
   padding: 5px 30px;
 }
 
-#row-actions {
-  margin:0;
-
-  select{
-    height: 28px;
-    line-height: 28px;
-  }
-}
+//#row-actions {
+//  margin:0;
+//
+//  select{
+//    height: 28px;
+//    line-height: 28px;
+//  }
+//}
 
 .pagination{
   margin: 0;
@@ -75,21 +90,21 @@ table thead th {
   color: @titleColor;
 }
 
-.text-center
-td.text-center,
-th.text-center,
-.table td.text-center,
-.table th.text-center{
-  text-align: center;
-}
+//.text-center
+//td.text-center,
+//th.text-center,
+//.table td.text-center,
+//.table th.text-center{
+//  text-align: center;
+//}
 
 
 // TABLE SORTER
 // ---------------------------------------------------------------------------------------------------------------------
-table tbody tr.selected td,
-.table-striped tbody tr.selected td{
-  background-color: #FFFFCC;
-}
+//table tbody tr.selected td,
+//.table-striped tbody tr.selected td{
+//  background-color: #FFFFCC;
+//}
 
 table thead tr a.asc,
 table thead tr a.desc,
@@ -122,6 +137,16 @@ table thead tr a.desc {
 
 // FORM ACTIONS
 // ---------------------------------------------------------------------------------------------------------------------
+.form-actions {
+//  padding: 30px;
+  padding: 19px 30px 20px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  background-color: #f5f5f5;
+  border-top: 1px solid #e5e5e5;
+
+  .clearfix();
+}
 ul.unstyled,
 ol.unstyled {
   margin: 0;
@@ -157,14 +182,18 @@ ol.unstyled form{
   width:50%;
   height:20%;
   max-width:300px;
-  .box-shadow(0 15px 10px @dropShadowColor);
-  .rotate(-3deg)
+  box-shadow: 0 15px 10px @dropShadowColor;
+  -webkit-transform: rotate(-3deg);
+      -ms-transform: rotate(-3deg);
+          transform: rotate(-3deg);
 }
 
 .drop-shadow:after{
   right:10px;
   left:auto;
-  .rotate(3deg)
+  -webkit-transform: rotate(3deg);
+      -ms-transform: rotate(3deg);
+          transform: rotate(3deg);
 }
 
 
@@ -178,14 +207,16 @@ ol.unstyled form{
   height:20%;
   max-width:300px;
   max-height:100px;
-
-  .box-shadow(0 15px 10px @dropShadowColor);
-  .rotate(-3deg);
+  box-shadow: 0 15px 10px @dropShadowColor;
+  -webkit-transform: rotate(-3deg);
+      -ms-transform: rotate(-3deg);
+          transform: rotate(-3deg);
 }
 
 .lifted:after {
   right:10px;
   left:auto;
-
-  .rotate(3deg);
+  -webkit-transform: rotate(3deg);
+      -ms-transform: rotate(3deg);
+          transform: rotate(3deg);
 }

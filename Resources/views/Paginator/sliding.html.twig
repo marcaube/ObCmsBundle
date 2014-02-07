@@ -5,8 +5,8 @@
 {% set show_disabled = 1 %}
 
 {% if pageCount > 1 %}
-    <div class="pagination pagination-centered">
-        <ul>
+    <div class="text-center">
+        <ul class="pagination ">
             {% if first is defined and current != first %}
                 <li class="first">
                     <a href="{{ path(route, query|merge({(pageParameterName): first})) }}">&lt;&lt;</a>
