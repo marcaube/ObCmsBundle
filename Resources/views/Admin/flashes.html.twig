@@ -1,6 +1,7 @@
-{% for key, message in app.session.getFlashBag().get('success') %}
+{% for key, message in app.session.getFlashBag().all() %}
     <div class="alert alert-block alert-{{ key }} fade in">
         <a class="close" data-dismiss="alert">×</a>
-        {{ message|trans }}
+        <h4 class="alert-heading">{{ message[0] ~ '.title'|capitalize|trans }}</h4>
+        {{ message[0]|trans }}
     </div>
 {% endfor %}

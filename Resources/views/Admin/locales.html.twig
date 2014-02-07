@@ -1,8 +1,7 @@
 {% if locales|length > 1 %}
-    <div class="btn-group pull-right" style="margin:7px 10px 0 0;">
+    <div class="btn-group pull-right navbar-btn">
         {% for l in locales %}
-            {#{{ path(route, params|merge({ '_locale': l })) }}#}
-            <a href="?_locale={{ l }}" class="btn btn-small {{ locale==l?"btn-success":"" }}">{{ l|capitalize }}</a>
+            <a href="?_locale={{ l }}" class="btn btn-small {{ locale==l?"btn-success":"btn-default" }}">{{ l|capitalize }}</a>
         {% endfor %}
     </div>
 {% endif %}
