@@ -9,8 +9,3 @@ services:
         class: Ob\CmsBundle\Twig\TwigExtensions
         tags:
             - { name: twig.extension }
-
-    form.type_extension.labelprefix:
-        class: Ob\CmsBundle\Form\LabelPrefixExtension
-        tags:
-            - { name: form.type_extension, alias: field }

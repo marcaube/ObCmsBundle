@@ -16,12 +16,12 @@
     </div>
 
     <div class="form-actions">
-        <ul class="record_actions unstyled pull-right">
+        <ul class="unstyled pull-right">
             <li>
                 <a id="submit" class="btn btn-primary">{% trans %}obcms.form.new{% endtrans %}</a>
             </li>
             <li>
-                <a class="btn" href="{{ path('ObCmsBundle_module_list', { 'name': module }) }}">
+                <a class="btn btn-default" href="{{ path('ObCmsBundle_module_list', { 'name': module }) }}">
                     {% trans %}obcms.form.back_to_list{% endtrans %}
                 </a>
             </li>
