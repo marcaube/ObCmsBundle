@@ -25,7 +25,6 @@ class Configuration implements ConfigurationInterface
         // more information on that topic.
         $rootNode
             ->children()
-                ->scalarNode('itemsPage')->defaultValue(25)->end()
                 ->arrayNode('locales')->defaultValue(array('%locale%'))->prototype('scalar')->end()->end()
             ->end();
 

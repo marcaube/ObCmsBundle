@@ -1,62 +1,83 @@
-body{
-  padding: 60px 0 40px;
-  background: #f1f1f1;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+// GLOBAL VALUES
+// ---------------------------------------------------------------------------------------------------------------------
+
+@titleColor:        lighten(#5A5A5A, 10%);
+@dropShadowOpacity: 0.35;
+@dropShadowColor:   rgba(0, 0, 0, @dropShadowOpacity);
+
+
+html {
+    font-family: sans-serif;
+    -webkit-text-size-adjust: 100%;
+        -ms-text-size-adjust: 100%;
+}
+
+body {
+    padding: 60px 0 40px;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    background: #f1f1f1;
 }
 
 .container {
-  max-width: 960px;
+    max-width: 960px;
 }
 
 .clearfix() {
     &:before,
     &:after {
-      content: " ";
-      display: table;
+        content: " ";
+        display: table;
     }
 
-  &:after {
-    clear: both;
-  }
+    &:after {
+        clear: both;
+    }
 }
-
-// GLOBAL VALUES
-// ---------------------------------------------------------------------------------------------------------------------
-
-// Typography
-@titleColor:                lighten(#5A5A5A, 10%);
-
-// Dropshadow
-@dropShadowOpacity:         0.35;
-@dropShadowColor:           rgba(0, 0, 0, @dropShadowOpacity);
 
 
 // LAYOUT
 // ---------------------------------------------------------------------------------------------------------------------
 
 // OLCG : One Line CSS Grid - one-half(oh), one-third(ot), two-third(tt) classes from Kickstrap
-.oh,.ot,.tt{float:left;padding:0 2% 2% 0;width:48%}.ot{width:31.9999999999%}.tt{width:63.9999999999%}.cl{clear:both}
+.oh, .ot, .tt {
+    float: left;
+    width: 48%;
+    padding: 0 2% 2% 0;
+}
+
+.ot {
+    width: 31.9999999999%
+}
+
+.tt {
+    width: 63.9999999999%
+}
+
+.cl {
+    clear: both
+}
 
 // Container
 .cms-wrapper {
-  background-color: #fff;
-  box-shadow: 0 1px 3px @dropShadowColor;
+    background-color: #fff;
+    box-shadow: 0 1px 3px @dropShadowColor;
 }
 
 // Content
 .space,
 .cms-container {
-  padding: 5px 30px;
+    padding: 5px 30px;
 }
 
-.pagination{
-  margin: 0;
+.pagination {
+    margin: 0;
 }
 
 // Filters
 .with-filters {
-  width:80%;
+    width: 80%;
 }
+
 .filters {
   width: 15%;
 }
@@ -66,17 +87,17 @@ body{
 // ---------------------------------------------------------------------------------------------------------------------
 
 // Page headers
-.page-header{
-  padding:0;
+.page-header {
+    padding: 0;
 
-  h1 {
-    color: @titleColor;
-    font-weight: normal;
-  }
+    h1 {
+        color: @titleColor;
+        font-weight: normal;
+    }
 }
 
 table thead th {
-  color: @titleColor;
+    color: @titleColor;
 }
 
 
@@ -86,114 +107,109 @@ table thead th {
 table thead tr a.asc,
 table thead tr a.desc,
 table thead tr a.sortable {
-  color: @titleColor;
-  display: table;
-  width: 100%;
-  padding-right: 5px;
-  margin-right: 20px;
-  background-image: url('../img/bg.gif');
-  background-repeat: no-repeat;
-  background-position: center right;
-  cursor: pointer;
+    display: table;
+    width: 100%;
+    padding-right: 5px;
+    margin-right: 20px;
+    color: @titleColor;
+    background: url('../img/bg.gif') no-repeat center right;
+    cursor: pointer;
 }
 
 table thead tr a.asc:hover,
 table thead tr a.desc:hover,
 table thead tr a.sortable:hover {
-  text-decoration: none;
+    text-decoration: none;
 }
 
 table thead tr a.asc {
-  background-image: url('../img/asc.gif');
+    background-image: url('../img/asc.gif');
 }
 
 table thead tr a.desc {
-  background-image: url('../img/desc.gif');
+    background-image: url('../img/desc.gif');
 }
-
 
 // FORM ACTIONS
 // ---------------------------------------------------------------------------------------------------------------------
 .form-actions {
-//  padding: 30px;
-  padding: 19px 30px 20px;
-  margin-top: 20px;
-  margin-bottom: 20px;
-  background-color: #f5f5f5;
-  border-top: 1px solid #e5e5e5;
+    padding: 19px 30px 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    background-color: #f5f5f5;
+    border-top: 1px solid #e5e5e5;
 
-  .clearfix();
+    .clearfix();
 }
+
 ul.unstyled,
 ol.unstyled {
-  margin: 0;
-  list-style: none;
+    margin: 0;
+    list-style: none;
 }
 
 .form-actions ul.unstyled li,
-.form-actions ol.unstyled li{
-  float:left;
-  margin-left: 5px;
+.form-actions ol.unstyled li {
+    float: left;
+    margin-left: 5px;
 }
 
 ul.unstyled form,
-ol.unstyled form{
-  margin: 0;
+ol.unstyled form {
+    margin: 0;
 }
-
 
 // DROP-SHADOWS
 // ---------------------------------------------------------------------------------------------------------------------
 
 .drop-shadow {
-  position:relative;
+    position: relative;
 }
 
 .drop-shadow:before,
 .drop-shadow:after {
-  content:"";
-  position:absolute;
-  z-index:-1;
-  bottom:15px;
-  left:10px;
-  width:50%;
-  height:20%;
-  max-width:300px;
-  box-shadow: 0 15px 10px @dropShadowColor;
-  -webkit-transform: rotate(-3deg);
-      -ms-transform: rotate(-3deg);
-          transform: rotate(-3deg);
+    content: "";
+    position: absolute;
+    z-index: -1;
+    bottom: 15px;
+    left: 10px;
+    width: 50%;
+    max-width: 300px;
+    height: 20%;
+    box-shadow: 0 15px 10px @dropShadowColor;
+    -webkit-transform: rotate(-3deg);
+        -ms-transform: rotate(-3deg);
+            transform: rotate(-3deg);
 }
 
-.drop-shadow:after{
-  right:10px;
-  left:auto;
-  -webkit-transform: rotate(3deg);
-      -ms-transform: rotate(3deg);
-          transform: rotate(3deg);
+.drop-shadow:after {
+    right: 10px;
+    left: auto;
+    -webkit-transform: rotate(3deg);
+        -ms-transform: rotate(3deg);
+            transform: rotate(3deg);
 }
-
 
 // Lifted corners
 // --------------
 .lifted:before,
 .lifted:after {
-  bottom:15px;
-  left:10px;
-  width:50%;
-  height:20%;
-  max-width:300px;
-  max-height:100px;
-  box-shadow: 0 15px 10px @dropShadowColor;
-  -webkit-transform: rotate(-3deg);
-      -ms-transform: rotate(-3deg);
-          transform: rotate(-3deg);
+    bottom: 15px;
+    left: 10px;
+    width: 50%;
+    max-width: 300px;
+    max-height: 100px;
+    height: 20%;
+    box-shadow: 0 15px 10px @dropShadowColor;
+    -webkit-transform: rotate(-3deg);
+        -ms-transform: rotate(-3deg);
+            transform: rotate(-3deg);
 }
 
 .lifted:after {
-  right:10px;
-  left:auto;
-  -webkit-transform: rotate(3deg);
-      -ms-transform: rotate(3deg);
-          transform: rotate(3deg);
+    right: 10px;
+    left: auto;
+    -webkit-transform: rotate(3deg);
+        -ms-transform: rotate(3deg);
+            transform: rotate(3deg);
 }

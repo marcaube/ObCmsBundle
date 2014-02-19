@@ -2,8 +2,6 @@
 
 namespace Ob\CmsBundle\Admin;
 
-use Ob\CmsBundle\Admin\AdminInterface;
-
 class AdminContainer
 {
     /**
