@@ -2,8 +2,13 @@
 
 namespace Ob\CmsBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Templating\EngineInterface;
+use Doctrine\Common\Persistence\ObjectManager;
+use Symfony\Component\Form\FormFactoryInterface;
+use Knp\Component\Pager\Paginator;
+use Ob\CmsBundle\Admin\AdminContainer;
+
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -11,8 +16,35 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Ob\CmsBundle\Form\AdminType;
 use Ob\CmsBundle\Admin\AdminInterface;
 
-class AdminController extends Controller
+class AdminController
 {
+    private $request;
+    private $templating;
+    private $entityManager;
+    protected $formFactory;
+    private $paginator;
+    private $container;
+    private $templates;
+    
+    public function __construct(
+        Request $request,
+        EngineInterface $templating,
+        ObjectManager $entityManager,
+        FormFactoryInterface $formFactory,
+        Paginator $paginator,
+        AdminContainer $container,
+        $templates
+    )
+    {
+        $this->request = $request;
+        $this->templating = $templating;
+        $this->entityManager = $entityManager;
+        $this->formFactory = $formFactory;
+        $this->paginator = $paginator;
+        $this->container = $container;
+        $this->templates = $templates;
+    }
+
     /**
      * Render the menu
      *
@@ -22,40 +54,16 @@ class AdminController extends Controller
      */
     public function menuAction($request)
     {
-        $menu = $this->get('ob.cms.admin_container')->getClasses();
-        $flat = true;
+        $menu = $this->container->getClasses();
 
         // Get the current module from the URI
-        $current = explode('?', $this->container->get('request')->server->get('REQUEST_URI'));
+        $current = explode('?', $this->request->server->get('REQUEST_URI'));
         $current = $current[0];
 
-        return $this->render('ObCmsBundle:Menu:menu.html.twig', array(
+        return $this->templating->renderResponse($this->templates['menu'], array(
             'items'   => $menu,
-            'flat'    => isset($flat),
+            'flat'    => true,
             'current' => $current,
-            'request' => $request  // For the locale switcher in the menu
-        ));
-    }
-
-    /**
-     * Render the locale switcher if there is more than one locale available
-     *
-     * @param $request
-     *
-     * @return Response
-     */
-    public function localesAction($request)
-    {
-        $locales = $this->container->getParameter('locales');
-        $locale = $request->query->get('_locale')?:null;
-
-        if (in_array($locale, $locales)) {
-            $this->get('session')->setLocale($locale);
-        }
-
-        return $this->render('ObCmsBundle:Admin:locales.html.twig', array(
-            'locale'  =>  $request->getLocale(),
-            'locales' =>  $locales,
         ));
     }
 
@@ -66,7 +74,7 @@ class AdminController extends Controller
      */
     public function dashboardAction()
     {
-        return $this->render('ObCmsBundle:Admin:dashboard.html.twig');
+        return $this->templating->renderResponse($this->templates['dashboard']);
     }
 
     /**
@@ -82,12 +90,12 @@ class AdminController extends Controller
     {
         $this->executeAction($name);
 
-        $adminClass = $this->get('ob.cms.admin_container')->getClass($name);
+        $adminClass = $this->container->getClass($name);
         $entities = $this->getEntities($adminClass, $request);
 
-        $template = $adminClass->listTemplate() ? : 'ObCmsBundle:List:list.html.twig';
+        $template = $adminClass->listTemplate() ? : $this->templates['list'];
 
-        return $this->render($template, array(
+        return $this->templating->renderResponse($template, array(
             'module'     => $name,
             'adminClass' => $adminClass,
             'entities'    => $entities,
@@ -104,16 +112,16 @@ class AdminController extends Controller
      */
     public function newAction($name)
     {
-        $adminClass = $this->get('ob.cms.admin_container')->getClass($name);
+        $adminClass = $this->container->getClass($name);
         $entity = $adminClass->getClass();
         $entity = new $entity;
 
         $formType = $adminClass->formType() ? : new AdminType($adminClass->formDisplay());
-        $form = $this->createForm($formType, $entity);
+        $form = $this->formFactory->create($formType, $entity);
 
-        $template = $adminClass->newTemplate() ? : 'ObCmsBundle:New:new.html.twig';
+        $template = $adminClass->newTemplate() ? : $this->templates['new'];
 
-        return $this->render($template, array(
+        return $this->templating->renderResponse($template, array(
             'module' => $name,
             'entity' => $entity,
             'form'   => $form->createView()
@@ -130,7 +138,7 @@ class AdminController extends Controller
      */
     public function createAction(Request $request, $name)
     {
-        $adminClass = $this->get('ob.cms.admin_container')->getClass($name);
+        $adminClass = $this->container->getClass($name);
         $entity = $adminClass->getClass();
         $entity = new $entity;
 
@@ -153,9 +161,9 @@ class AdminController extends Controller
             )));
         }
 
-        $template = $adminClass->newTemplate() ? : 'ObCmsBundle:New:new.html.twig';
+        $template = $adminClass->newTemplate() ? : $this->templates['new'];
 
-        return $this->render($template, array(
+        return $this->templating->renderResponse($template, array(
             'module'      => $name,
             'entity'      => $entity,
             'form'        => $form->createView(),
@@ -174,24 +182,23 @@ class AdminController extends Controller
      */
     public function editAction($name, $id)
     {
-        $em = $this->getDoctrine()->getManager();
-        $adminClass = $this->get('ob.cms.admin_container')->getClass($name);
-        $entity = $em->getRepository($adminClass->getRepository())->find($id);
+        $adminClass = $this->container->getClass($name);
+        $entity = $this->entityManager->getRepository($adminClass->getRepository())->find($id);
 
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find ' . $name . ' entity.');
         }
 
         $formType = $adminClass->formType() ? : new AdminType($adminClass->formDisplay());
-        $editForm = $this->createForm($formType, $entity);
+        $editForm = $this->formFactory->create($formType, $entity);
 
-        $template = $adminClass->editTemplate() ? : 'ObCmsBundle:Edit:edit.html.twig';
+        $template = $adminClass->editTemplate() ? : $this->templates['edit'];
 
-        return $this->render($template, array(
+        return $this->templating->renderResponse($template, array(
             'module' => $name,
             'entity' => $entity,
             'edit_form' => $editForm->createView(),
-            'previous'  =>  $this->get('request')->server->get('HTTP_REFERER')? : null
+            'previous'  =>  $this->request->server->get('HTTP_REFERER')? : null
         ));
     }
 
@@ -209,7 +216,7 @@ class AdminController extends Controller
     public function updateAction(Request $request, $name, $id)
     {
         $em = $this->getDoctrine()->getManager();
-        $adminClass = $this->get('ob.cms.admin_container')->getClass($name);
+        $adminClass = $this->container->getClass($name);
         $entity = $em->getRepository($adminClass->getRepository())->find($id);
 
         if (!$entity) {
@@ -230,7 +237,7 @@ class AdminController extends Controller
             return $this->redirect($this->generateUrl('ObCmsBundle_module_edit', array('name' => $name, 'id' => $id)));
         }
 
-        return $this->render('ObCmsBundle:Edit:edit.html.twig', array(
+        return $this->templating->renderResponse('ObCmsBundle:Edit:edit.html.twig', array(
             'module'    => $name,
             'entity'    => $entity,
             'edit_form' => $editForm->createView()
@@ -244,15 +251,13 @@ class AdminController extends Controller
      */
     private function executeAction($name)
     {
-        $request = $this->get('request');
-
-        if ($request->getMethod() == 'POST') {
-            $action = $request->request->get('action');
-            $ids = $request->request->get('action-checkbox')?:array();
+        if ($this->request->getMethod() == 'POST') {
+            $action = $this->request->request->get('action');
+            $ids = $this->request->request->get('action-checkbox')?:array();
             $ids = array_keys($ids);
 
             if (!empty($ids) and $action != '') {
-                $adminClass = $this->get('ob.cms.admin_container')->getClass($name);
+                $adminClass = $this->container->getClass($name);
                 $em = $this->getDoctrine()->getManager();
                 $entities = $em->getRepository($adminClass->getRepository())->findById($ids);
 
@@ -280,9 +285,7 @@ class AdminController extends Controller
      */
     private function getEntities(AdminInterface $adminClass, Request $request)
     {
-        $entityManager = $this->getDoctrine()->getManager();
-        $repository = $entityManager->getRepository($adminClass->getRepository());
-
+        $repository = $this->entityManager->getRepository($adminClass->getRepository());
         $query = $repository->createQueryBuilder('o');
 
         // Search
@@ -291,7 +294,7 @@ class AdminController extends Controller
         // Order by
         $this->buildOrderBy($adminClass->listOrderBy(), $query);
 
-        return $this->get('knp_paginator')->paginate(
+        return $this->paginator->paginate(
             $query,
             $request->query->get('page', 1),
             $adminClass->listPageItems()

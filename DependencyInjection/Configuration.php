@@ -20,12 +20,29 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('ob_cms');
 
-        // Here you should define the parameters that are allowed to
-        // configure your bundle. See the documentation linked above for
-        // more information on that topic.
         $rootNode
             ->children()
                 ->arrayNode('locales')->defaultValue(array('%locale%'))->prototype('scalar')->end()->end()
+
+                ->arrayNode('classes')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->scalarNode('controller')->defaultValue('Ob\CmsBundle\Controller\AdminController')->end()
+                    ->end()
+                ->end()
+
+                ->arrayNode('templates')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->scalarNode('layout')->defaultValue('ObCmsBundle::layout.html.twig')->end()
+                        ->scalarNode('menu')->defaultValue('ObCmsBundle:Menu:menu.html.twig')->end()
+                        ->scalarNode('dashboard')->defaultValue('ObCmsBundle:Admin:dashboard.html.twig')->end()
+                        ->scalarNode('list')->defaultValue('ObCmsBundle:List:list.html.twig')->end()
+                        ->scalarNode('new')->defaultValue('ObCmsBundle:New:new.html.twig')->end()
+                        ->scalarNode('edit')->defaultValue('ObCmsBundle:Edit:edit.html.twig')->end()
+                        ->scalarNode('fields')->defaultValue('ObCmsBundle:Form:fields.html.twig')->end()
+                    ->end()
+                ->end()
             ->end();
 
         return $treeBuilder;

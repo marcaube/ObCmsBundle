@@ -36,7 +36,7 @@
                     </div>
                 <![endif]-->
 
-                {% render controller("ObCmsBundle:Admin:menu", {'request': app.request}) %}
+                {% render controller("ob_cms.controller:menuAction", {'request': app.request}) %}
 
                 {% include "ObCmsBundle:Admin:impersonator.html.twig" %}
                 {% include "ObCmsBundle:Admin:flashes.html.twig" %}

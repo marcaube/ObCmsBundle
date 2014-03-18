@@ -1,7 +1,0 @@
-{% if locales|length > 1 %}
-    <div class="btn-group pull-right navbar-btn">
-        {% for l in locales %}
-            <a href="?_locale={{ l }}" class="btn btn-small {{ locale==l?"btn-success":"btn-default" }}">{{ l|capitalize }}</a>
-        {% endfor %}
-    </div>
-{% endif %}

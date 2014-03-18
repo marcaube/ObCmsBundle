@@ -2,6 +2,18 @@ parameters:
     ob.cms.admin_container.class: Ob\CmsBundle\Admin\AdminContainer
 
 services:
+    ob_cms.controller:
+        class: %ob_cms.classes.controller%
+        arguments:
+            - @request
+            - @templating
+            - @doctrine.orm.entity_manager
+            - @form.factory
+            - @knp_paginator
+            - @ob.cms.admin_container
+            - %ob_cms.templates%
+        scope: request
+
     ob.cms.admin_container:
         class: %ob.cms.admin_container.class%
 
