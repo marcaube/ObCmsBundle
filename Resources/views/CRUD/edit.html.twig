@@ -10,7 +10,7 @@
         </a>
     </div>
 
-    <h1 class="h3 page-header">{{ (module ~ '.edit_title')|trans }}</h1>
+    <h1 class="h3 page-header">{{ (module ~ '.edit_header')|trans }}</h1>
 
     <form action="{{ path('ObCmsBundle_module_update', { 'name': module, 'id': entity.id }) }}" method="post" {{ form_enctype(edit_form) }} id="ob_cms-form">
 

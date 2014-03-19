@@ -10,7 +10,7 @@
         </a>
     </div>
 
-    <h1 class="h3 page-header">{{ (module ~ '.new_title')|trans }}</h1>
+    <h1 class="h3 page-header">{{ (module ~ '.new_header')|trans }}</h1>
 
     <form action="{{ path('ObCmsBundle_module_create', { 'name': module }) }}" method="post" {{ form_enctype(form) }} id="ob_cms-form">
 
