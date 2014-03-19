@@ -3,23 +3,24 @@
 {% use "ObCmsBundle:List:table.html.twig" %}
 
 {% block content %}
-    <div class="cms-container">
-        <h1 class="h3 page-header">{{ (module ~ '.list_title')|trans }}</h1>
-
-        <div>
-            {% if adminClass.listSearch %}
-                {% include "ObCmsBundle:List:form_search.html.twig" %}
-            {% endif %}
-
-            {% block table %}{{ parent() }}{% endblock %}
-
-            {{ knp_pagination_render(entities, 'ObCmsBundle:Paginator:sliding.html.twig') }}
-        </div>
-
-        <div class="clearfix"></div>
+    <div class="text-right">
+        <a href="{{ path('ObCmsBundle_module_new', { 'name': module }) }}" class="btn btn-primary btn-xs" role="button">
+            <span class="glyphicon glyphicon-plus"></span>
+            {{ (module ~ '.list_new')|trans }}
+        </a>
     </div>
 
-    {% include "ObCmsBundle:List:form_actions.html.twig" %}
+    <h1 class="h3 page-header">{{ (module ~ '.list_title')|trans }}</h1>
+
+    <div>
+        {% if adminClass.listSearch %}
+            {% include "ObCmsBundle:List:form_search.html.twig" %}
+        {% endif %}
+
+        {% block table %}{{ parent() }}{% endblock %}
+
+        {{ knp_pagination_render(entities, 'ObCmsBundle:Paginator:sliding.html.twig') }}
+    </div>
 {% endblock %}
 
 {% block javascripts %}

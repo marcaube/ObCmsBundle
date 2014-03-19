@@ -40,18 +40,10 @@
             {% render controller("ob_cms.controller:menuAction", {'request': app.request}) %}
 
             <div class="container">
-
                 {% include "ObCmsBundle:Admin:impersonator.html.twig" %}
                 {% include "ObCmsBundle:Admin:flashes.html.twig" %}
 
-                <div class="row">
-                    <div class="span12">
-                        <div class="cms-wrapper drop-shadow lifted">
-                            {% block content %}{% endblock %}
-                        </div>
-                    </div>
-                </div>
-
+                {% block content %}{% endblock %}
             </div>
         {% endblock %}
 
