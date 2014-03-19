@@ -1,5 +1,9 @@
 {% extends templates['layout'] %}
 
+{% block title %}
+    {{ (module ~ '.list_header')|trans }}
+{% endblock %}
+
 {% block content %}
     <div class="text-right">
         <a href="{{ path('ObCmsBundle_module_new', { 'name': module }) }}" class="btn btn-primary btn-xs" role="button">

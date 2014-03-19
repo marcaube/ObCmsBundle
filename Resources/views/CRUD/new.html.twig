@@ -1,5 +1,9 @@
 {% extends '@ObCms/CRUD/form.html.twig' %}
 
+{% block title %}
+    {{ (module ~ '.new_header')|trans }}
+{% endblock %}
+
 {% block page_header %}
     {{ (module ~ '.new_header')|trans }}
 {% endblock %}
