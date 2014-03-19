@@ -1,102 +1,98 @@
 {% block table %}
-    <form action="" id="row-actions" class="form-inline" method="POST">
+    <table class="table table-bordered table-condensed table-striped">
 
-        <table class="table table-bordered table-condensed table-striped">
+        <thead>
+            {% if adminClass.listDisplay %}
+                <tr>
+                    <td colspan="{{ adminClass.listDisplay|length + 1 }}">
+                        {% include "ObCmsBundle:List:row_actions.html.twig" %}
+                    </td>
+                </tr>
 
-            <thead>
-                {% if adminClass.listDisplay %}
-                    <tr>
-                        <td colspan="{{ adminClass.listDisplay|length + 1 }}">
-                            {% include "ObCmsBundle:List:row_actions.html.twig" %}
-                        </td>
-                    </tr>
+                <tr>
+                    <th class="text-center" style="width:20px;"><input id="check-all" type="checkbox"></th>
+                    {% block headers %}
+                        {% for field in adminClass.listDisplay %}
+                            <th>
+                                {% if field in adminClass.listSort %}
+                                    {{ knp_pagination_sortable(entities, (module ~ '.list_' ~ field)|trans, 'o.' ~ field) }}
+                                {% else %}
+                                    {{ (module ~ '.list_' ~ field)|trans }}
+                                {% endif %}
+                            </th>
+                        {% endfor %}
+                    {% endblock %}
+                </tr>
+            {% else %}
+                <tr>
+                    <td class="text-center">
+                        You should specify which fields to display using the <code>listDisplay</code> param.
+                    </td>
+                </tr>
+            {% endif %}
+        </thead>
 
-                    <tr>
-                        <th class="text-center" style="width:20px;"><input id="check-all" type="checkbox"></th>
-                        {% block headers %}
-                            {% for field in adminClass.listDisplay %}
-                                <th>
-                                    {% if field in adminClass.listSort %}
-                                        {{ knp_pagination_sortable(entities, (module ~ '.list_' ~ field)|trans, 'o.' ~ field) }}
-                                    {% else %}
-                                        {{ (module ~ '.list_' ~ field)|trans }}
-                                    {% endif %}
-                                </th>
-                            {% endfor %}
-                        {% endblock %}
-                    </tr>
-                {% else %}
+        {% if adminClass.listDisplay %}
+            <tbody>
+                {% for entity in entities %}
+
                     <tr>
                         <td class="text-center">
-                            You should specify which fields to display using the <code>listDisplay</code> param.
+                            <input type="checkbox" name="action-checkbox[{{ entity.id }}]" value="{{ entity.id }}">
                         </td>
-                    </tr>
-                {% endif %}
-            </thead>
 
-            {% if adminClass.listDisplay %}
-                <tbody>
-                    {% for entity in entities %}
+                        {% for k, field in adminClass.listDisplay %}
 
-                        <tr>
-                            <td class="text-center">
-                                <input type="checkbox" name="action-checkbox[{{ entity.id }}]" value="{{ entity.id }}">
-                            </td>
+                            {% set type = varType(attribute(entity, field)) %}
+                            {% set value = attribute(entity, field) %}
 
-                            {% for k, field in adminClass.listDisplay %}
+                            <td {% if type in ["boolean", "integer"] %}class="text-center"{% endif %}>
 
-                                {% set type = varType(attribute(entity, field)) %}
-                                {% set value = attribute(entity, field) %}
+                                {% if field in adminClass.listLinks or k == 0%}
+                                    <a href="{{ path('ObCmsBundle_module_edit', { 'id': entity.id, 'name': module }) }}">
+                                {% endif %}
 
-                                <td {% if type in ["boolean", "integer"] %}class="text-center"{% endif %}>
-
-                                    {% if field in adminClass.listLinks or k == 0%}
-                                        <a href="{{ path('ObCmsBundle_module_edit', { 'id': entity.id, 'name': module }) }}">
-                                    {% endif %}
-
-                                    {% if type == "object" %}
-                                        {%  if varClass(value) == "DateTime" %}
-                                            {{ value|date('Y-m-d h:i:s') }}
-                                        {% else %}
-                                            {{ value }}
-                                        {% endif %}
-                                    {% elseif type == "boolean" %}
-                                        <i class="glyphicon glyphicon-{{ value?"ok":"ban-circle" }}"></i>
+                                {% if type == "object" %}
+                                    {%  if varClass(value) == "DateTime" %}
+                                        {{ value|date('Y-m-d h:i:s') }}
                                     {% else %}
-                                        {% block default_cell %}{{ value|raw }}{% endblock %}
+                                        {{ value }}
                                     {% endif %}
+                                {% elseif type == "boolean" %}
+                                    <i class="glyphicon glyphicon-{{ value?"ok":"ban-circle" }}"></i>
+                                {% else %}
+                                    {% block default_cell %}{{ value|raw }}{% endblock %}
+                                {% endif %}
 
-                                    {% if field in adminClass.listLinks or k == 0 %}
-                                        </a>
-                                    {% endif %}
+                                {% if field in adminClass.listLinks or k == 0 %}
+                                    </a>
+                                {% endif %}
 
-                                </td>
-                            {% endfor %}
-                        </tr>
-
-                    {% else %}
-                        <tr>
-                            <td colspan="{{ adminClass.listDisplay|length + 1 }}" class="text-center">
-                                Empty
                             </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            {% endif %}
+                        {% endfor %}
+                    </tr>
 
-            {% if entities.paginationData.pageCount > 1 %}
-                <tfoot>
+                {% else %}
                     <tr>
-                        <td colspan="{{ adminClass.listDisplay|length + 1 }}">
-                            <span class="text-muted">
-                                {% include "ObCmsBundle:Paginator:count.html.twig" %}
-                            </span>
+                        <td colspan="{{ adminClass.listDisplay|length + 1 }}" class="text-center">
+                            Empty
                         </td>
                     </tr>
-                </tfoot>
-            {% endif %}
+                {% endfor %}
+            </tbody>
+        {% endif %}
 
-        </table>
+        {% if entities.paginationData.pageCount > 1 %}
+            <tfoot>
+                <tr>
+                    <td colspan="{{ adminClass.listDisplay|length + 1 }}">
+                        <span class="text-muted">
+                            {% include "ObCmsBundle:Paginator:count.html.twig" %}
+                        </span>
+                    </td>
+                </tr>
+            </tfoot>
+        {% endif %}
 
-    </form>
+    </table>
 {% endblock %}
