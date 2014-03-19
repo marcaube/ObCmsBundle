@@ -19,5 +19,6 @@ services:
 
     ob.cms.twig.extension:
         class: Ob\CmsBundle\Twig\TwigExtensions
+        arguments: [ %ob_cms.configs% ]
         tags:
             - { name: twig.extension }

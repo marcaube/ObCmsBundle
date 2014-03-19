@@ -27,6 +27,7 @@ class ObCmsExtension extends Extension
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
 
+        $container->setParameter('ob_cms.configs', $config);
         $container->setParameter('ob_cms.locales', $config['locales']);
 
         $container->setParameter('ob_cms.classes', $config['classes']);

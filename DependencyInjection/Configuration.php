@@ -23,6 +23,7 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->children()
                 ->arrayNode('locales')->defaultValue(array('%locale%'))->prototype('scalar')->end()->end()
+                ->scalarNode('logo')->defaultValue('http://placehold.it/400x65')->end()
 
                 ->arrayNode('classes')
                     ->addDefaultsIfNotSet()

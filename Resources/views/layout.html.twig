@@ -32,7 +32,11 @@
         <![endif]-->
 
         {% block body %}
-
+            <header style="margin-bottom:12px;">
+                <div class="container">
+                    <img src="{{ logo }}" alt="" style="margin-top: 25px;"/>
+                </div>
+            </header>
             {% render controller("ob_cms.controller:menuAction", {'request': app.request}) %}
 
             <div class="container">

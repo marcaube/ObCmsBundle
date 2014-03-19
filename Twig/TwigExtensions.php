@@ -3,11 +3,29 @@ namespace Ob\CmsBundle\Twig;
 
 class TwigExtensions extends \Twig_Extension
 {
+    private $configs;
+
+    /**
+     * @param array $configs
+     */
+    public function __construct($configs)
+    {
+        $this->configs = $configs;
+    }
+
     public function getFunctions()
     {
         return array(
             'varType'  => new \Twig_Function_Method($this, 'varType'),
             'varClass' => new \Twig_Function_Method($this, 'varClass')
+        );
+    }
+
+    public function getGlobals()
+    {
+        return array(
+            'templates' => $this->configs['templates'],
+            'logo' => $this->configs['logo']
         );
     }
 
