@@ -1,7 +1,7 @@
-<form action="" id="row-actions" class="form-inline col-lg-6" method="POST">
+<form action="" id="row-actions" class="form-inline col-sm-9 col-xs-12" method="POST">
     <label class="control-label text-muted" for="actions">{% trans %}obcms.list.action_title{% endtrans %} :&nbsp;</label>
 
-    <select name="action" id="actions" class="form-control input-sm">
+    <select name="action" id="actions" class="form-control input-sm" style="display: inline;max-width: 175px;">
         <option value="">----------</option>
         {%  for action in adminClass.listActions %}
             <option value="{{ action }}">{{ ( module ~ '.action_' ~ action)|trans }}</option>
@@ -11,7 +11,7 @@
 
     <input type="submit" class="btn btn-default btn-sm" value="{% trans %}obcms.list.action_execute{% endtrans %}">
 
-    <span class="help-inline">
+    <span class="help-inline hidden-xs">
         <span id="check-count" class="text-muted"></span>
     </span>
 </form>
