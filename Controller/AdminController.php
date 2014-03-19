@@ -19,7 +19,6 @@ use Ob\CmsBundle\Admin\AdminInterface;
 
 class AdminController
 {
-    private $request;
     private $templating;
     private $entityManager;
     private $formFactory;
@@ -30,7 +29,6 @@ class AdminController
     private $templates;
     
     public function __construct(
-        Request $request,
         EngineInterface $templating,
         ObjectManager $entityManager,
         FormFactoryInterface $formFactory,
@@ -41,7 +39,6 @@ class AdminController
         $templates
     )
     {
-        $this->request = $request;
         $this->templating = $templating;
         $this->entityManager = $entityManager;
         $this->formFactory = $formFactory;
@@ -59,12 +56,12 @@ class AdminController
      *
      * @return Response
      */
-    public function menuAction($request)
+    public function menuAction(Request $request)
     {
         $menu = $this->container->getClasses();
 
         // Get the current module from the URI
-        $current = explode('?', $this->request->server->get('REQUEST_URI'));
+        $current = explode('?', $request->server->get('REQUEST_URI'));
         $current = $current[0];
 
         return $this->templating->renderResponse($this->templates['menu'], array(
@@ -95,7 +92,7 @@ class AdminController
      */
     public function listAction(Request $request, $name)
     {
-        $this->executeAction($name);
+        $this->executeAction($request, $name);
 
         $adminClass = $this->container->getClass($name);
         $entities = $this->getEntities($adminClass, $request);
@@ -186,7 +183,7 @@ class AdminController
             'module' => $name,
             'entity' => $entity,
             'edit_form' => $editForm->createView(),
-            'previous'  =>  $this->request->server->get('HTTP_REFERER')? : null
+            'previous'  =>  $request->server->get('HTTP_REFERER')? : null
         ));
     }
 
@@ -195,28 +192,27 @@ class AdminController
      *
      * @param string $name
      */
-    private function executeAction($name)
+    private function executeAction(Request $request, $name)
     {
-        if ($this->request->getMethod() == 'POST') {
-            $action = $this->request->request->get('action');
-            $ids = $this->request->request->get('action-checkbox')?:array();
+        if ($request->getMethod() == 'POST') {
+            $action = $request->get('action');
+            $ids = $request->get('action-checkbox')?:array();
             $ids = array_keys($ids);
 
             if (!empty($ids) and $action != '') {
                 $adminClass = $this->container->getClass($name);
-                $em = $this->getDoctrine()->getManager();
-                $entities = $em->getRepository($adminClass->getRepository())->findById($ids);
+                $entities = $this->entityManager->getRepository($adminClass->getRepository())->findById($ids);
 
                 foreach ($entities as $entity) {
                     // TODO: check if function exists or raise Exception
                     if ($action == 'delete-action') {
-                        $em->remove($entity);
+                        $this->entityManager->remove($entity);
                     } else {
                         $entity->{$action}();
-                        $em->persist($entity);
+                        $this->entityManager->persist($entity);
                     }
                 }
-                $em->flush();
+                $this->entityManager->flush();
             }
         }
     }

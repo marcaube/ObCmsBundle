@@ -5,7 +5,6 @@ services:
     ob_cms.controller:
         class: %ob_cms.classes.controller%
         arguments:
-            - @request
             - @templating
             - @doctrine.orm.entity_manager
             - @form.factory
