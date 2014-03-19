@@ -41,6 +41,7 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('list')->defaultValue('ObCmsBundle:CRUD:list.html.twig')->end()
                         ->scalarNode('new')->defaultValue('ObCmsBundle:CRUD:new.html.twig')->end()
                         ->scalarNode('edit')->defaultValue('ObCmsBundle:CRUD:edit.html.twig')->end()
+                        ->scalarNode('table')->defaultValue('ObCmsBundle:Table:table.html.twig')->end()
                         ->scalarNode('fields')->defaultValue('ObCmsBundle:Form:fields.html.twig')->end()
                     ->end()
                 ->end()

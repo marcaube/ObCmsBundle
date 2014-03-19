@@ -1,7 +1,5 @@
 {% extends templates['layout'] %}
 
-{% use "ObCmsBundle:List:table.html.twig" %}
-
 {% block content %}
     <div class="text-right">
         <a href="{{ path('ObCmsBundle_module_new', { 'name': module }) }}" class="btn btn-primary btn-xs" role="button">
@@ -13,8 +11,7 @@
     <h1 class="h3 page-header">{{ (module ~ '.list_header')|trans }}</h1>
 
     <div>
-        {% block table %}{{ parent() }}{% endblock %}
-
+        {% include templates['table'] %}
         {{ knp_pagination_render(entities, 'ObCmsBundle:Paginator:sliding.html.twig') }}
     </div>
 {% endblock %}

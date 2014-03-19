@@ -51,29 +51,7 @@
                                 {% set value = attribute(adminClass, field, [entity]) %}
                             {% endif %}
 
-                            <td {% if type in ["boolean", "integer"] %}class="text-center"{% endif %}>
-
-                                {% if field in adminClass.listLinks or k == 0%}
-                                    <a href="{{ path('ObCmsBundle_module_edit', { 'id': entity.id, 'name': module }) }}">
-                                {% endif %}
-
-                                {% if type == "object" %}
-                                    {%  if varClass(value) == "DateTime" %}
-                                        {{ value|date('Y-m-d h:i:s') }}
-                                    {% else %}
-                                        {{ value }}
-                                    {% endif %}
-                                {% elseif type == "boolean" %}
-                                    <i class="glyphicon glyphicon-{{ value?"ok":"ban-circle" }}"></i>
-                                {% else %}
-                                    {% block default_cell %}{{ value|raw }}{% endblock %}
-                                {% endif %}
-
-                                {% if field in adminClass.listLinks or k == 0 %}
-                                    </a>
-                                {% endif %}
-
-                            </td>
+                            {% include '@ObCms/Table/Cell/' ~ type ~ '.html.twig' %}
                         {% endfor %}
                     </tr>
 

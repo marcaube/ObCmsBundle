@@ -1,0 +1,17 @@
+{% extends '@ObCms/Table/Cell/default.html.twig' %}
+
+{% block cell_class %}text-center{% endblock %}
+
+{% block cell_content %}
+
+    {% if field in adminClass.listLinks or k == 0 %}
+        <a href="{{ path('ObCmsBundle_module_edit', { 'id': entity.id, 'name': module }) }}">
+    {% endif %}
+
+    <i class="glyphicon glyphicon-{{ value?"ok":"ban-circle" }}"></i>
+
+    {% if field in adminClass.listLinks or k == 0 %}
+        </a>
+    {% endif %}
+
+{% endblock %}
