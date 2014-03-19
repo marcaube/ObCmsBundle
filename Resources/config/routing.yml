@@ -1,4 +1,3 @@
-# LISTING
 ObCmsBundle_module_list:
     pattern: /{name}
     defaults: { _controller: ob_cms.controller:listAction }
@@ -7,30 +6,14 @@ ObCmsBundle_module_actions:
     pattern: /{name}/actions
     defaults: { _controller: ob_cms.controller:actionsAction }
 
-
-# CREATE
 ObCmsBundle_module_new:
     pattern: /{name}/new
     defaults: { _controller: ob_cms.controller:newAction }
 
-ObCmsBundle_module_create:
-    pattern: /{name}/create
-    defaults: { _controller: ob_cms.controller:createAction }
-    requirements: { _method: post }
-
-
-# EDIT
 ObCmsBundle_module_edit:
     pattern: /{name}/{id}/edit
     defaults: { _controller: ob_cms.controller:editAction }
 
-ObCmsBundle_module_update:
-    pattern:  /{name}/{id}/update
-    defaults: { _controller: ob_cms.controller:updateAction }
-    requirements: { _method: post }
-
-
-# DASHBOARD
 ObCmsBundle_module_dashboard:
     pattern: /
     defaults: { _controller: ob_cms.controller:dashboardAction }

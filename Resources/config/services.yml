@@ -9,6 +9,8 @@ services:
             - @templating
             - @doctrine.orm.entity_manager
             - @form.factory
+            - @router
+            - @session
             - @knp_paginator
             - @ob.cms.admin_container
             - %ob_cms.templates%

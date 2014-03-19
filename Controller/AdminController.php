@@ -3,6 +3,7 @@
 namespace Ob\CmsBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Templating\EngineInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -21,7 +22,9 @@ class AdminController
     private $request;
     private $templating;
     private $entityManager;
-    protected $formFactory;
+    private $formFactory;
+    private $router;
+    private $session;
     private $paginator;
     private $container;
     private $templates;
@@ -31,6 +34,8 @@ class AdminController
         EngineInterface $templating,
         ObjectManager $entityManager,
         FormFactoryInterface $formFactory,
+        RouterInterface $router,
+        $session,
         Paginator $paginator,
         AdminContainer $container,
         $templates
@@ -40,6 +45,8 @@ class AdminController
         $this->templating = $templating;
         $this->entityManager = $entityManager;
         $this->formFactory = $formFactory;
+        $this->router = $router;
+        $this->session = $session;
         $this->paginator = $paginator;
         $this->container = $container;
         $this->templates = $templates;
@@ -110,7 +117,7 @@ class AdminController
      *
      * @return Response
      */
-    public function newAction($name)
+    public function newAction(Request $request, $name)
     {
         $adminClass = $this->container->getClass($name);
         $entity = $adminClass->getClass();
@@ -120,55 +127,25 @@ class AdminController
         $formType = $formType ? new $formType() : new AdminType($adminClass->formDisplay());
         $form = $this->formFactory->create($formType, $entity);
 
+        if ($request->isMethod('POST')) {
+            if ($form->submit($request)->isValid()) {
+                $this->entityManager->persist($entity);
+                $this->entityManager->flush();
+                $this->session->getFlashBag()->add('success', $name . '.create.success');
+
+                return new RedirectResponse($this->router->generate('ObCmsBundle_module_edit', array(
+                    'name' => $name,
+                    'id' => $entity->getId()
+                )));
+            }
+        }
+
         $template = $adminClass->newTemplate() ? : $this->templates['new'];
 
         return $this->templating->renderResponse($template, array(
             'module' => $name,
             'entity' => $entity,
             'form'   => $form->createView()
-        ));
-    }
-
-    /**
-     * Handle the creation of a new entity
-     *
-     * @param Request $request
-     * @param string  $name
-     *
-     * @return RedirectResponse|Response
-     */
-    public function createAction(Request $request, $name)
-    {
-        $adminClass = $this->container->getClass($name);
-        $entity = $adminClass->getClass();
-        $entity = new $entity;
-
-        $formType = $adminClass->formType();
-        $formType = $formType ? new $formType() : new AdminType($adminClass->formDisplay());
-        $form = $this->createForm($formType, $entity);
-
-        if ($form->bind($request)->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($entity);
-            $em->flush();
-
-            $this->get('session')->getFlashBag()->add(
-                'success',
-                $name . '.create.success'
-            );
-
-            return $this->redirect($this->generateUrl('ObCmsBundle_module_edit', array(
-                'name' => $name,
-                'id' => $entity->getId()
-            )));
-        }
-
-        $template = $adminClass->newTemplate() ? : $this->templates['new'];
-
-        return $this->templating->renderResponse($template, array(
-            'module'      => $name,
-            'entity'      => $entity,
-            'form'        => $form->createView(),
         ));
     }
 
@@ -182,7 +159,7 @@ class AdminController
      *
      * @throws NotFoundHttpException
      */
-    public function editAction($name, $id)
+    public function editAction(Request $request, $name, $id)
     {
         $adminClass = $this->container->getClass($name);
         $entity = $this->entityManager->getRepository($adminClass->getRepository())->find($id);
@@ -195,6 +172,14 @@ class AdminController
         $formType = $formType ? new $formType() : new AdminType($adminClass->formDisplay());
         $editForm = $this->formFactory->create($formType, $entity);
 
+        if ($request->isMethod('POST')) {
+            if ($editForm->submit($request)->isValid()) {
+                $this->entityManager->persist($entity);
+                $this->entityManager->flush();
+                $this->session->getFlashBag()->add('success', $name . '.edit.success');
+            }
+        }
+
         $template = $adminClass->editTemplate() ? : $this->templates['edit'];
 
         return $this->templating->renderResponse($template, array(
@@ -202,48 +187,6 @@ class AdminController
             'entity' => $entity,
             'edit_form' => $editForm->createView(),
             'previous'  =>  $this->request->server->get('HTTP_REFERER')? : null
-        ));
-    }
-
-    /**
-     * Update an entity
-     *
-     * @param Request $request
-     * @param string  $name
-     * @param int     $id
-     *
-     * @return RedirectResponse|Response
-     *
-     * @throws NotFoundHttpException
-     */
-    public function updateAction(Request $request, $name, $id)
-    {
-        $em = $this->getDoctrine()->getManager();
-        $adminClass = $this->container->getClass($name);
-        $entity = $em->getRepository($adminClass->getRepository())->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find ' . $name . ' entity.');
-        }
-
-        $editForm = $this->createForm(new AdminType($adminClass->formDisplay()), $entity);
-
-        if ($editForm->bind($request)->isValid()) {
-            $em->persist($entity);
-            $em->flush();
-
-            $this->get('session')->getFlashBag()->add(
-                'success',
-                $name . '.edit.success'
-            );
-
-            return $this->redirect($this->generateUrl('ObCmsBundle_module_edit', array('name' => $name, 'id' => $id)));
-        }
-
-        return $this->templating->renderResponse('ObCmsBundle:Edit:edit.html.twig', array(
-            'module'    => $name,
-            'entity'    => $entity,
-            'edit_form' => $editForm->createView()
         ));
     }
 
