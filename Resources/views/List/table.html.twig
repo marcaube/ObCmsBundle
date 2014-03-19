@@ -17,7 +17,7 @@
                             {% for field in adminClass.listDisplay %}
                                 <th>
                                     {% if field in adminClass.listSort %}
-                                        {{ knp_pagination_sortable(entities, (module ~ '.list_' ~ field)|trans, 'o.' ~ field|lower) }}
+                                        {{ knp_pagination_sortable(entities, (module ~ '.list_' ~ field)|trans, 'o.' ~ field) }}
                                     {% else %}
                                         {{ (module ~ '.list_' ~ field)|trans }}
                                     {% endif %}
