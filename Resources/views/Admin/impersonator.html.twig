@@ -5,7 +5,7 @@
             <a href="{{ path('ObCmsBundle_module_edit', { 'name': 'users', 'id': app.user.id }) }}">
                 {{- app.user.username|capitalize -}}
             </a>.
-            <a href="?_imp=_exit">{% trans %}obcms.connected_back{% endtrans %} <i class="icon icon-signout"></i></a>
+            <a href="?_imp=_exit">{% trans %}obcms.connected_back{% endtrans %} <i class="glyphicon glyphicon-log-out"></i></a>
         </div>
     {% endif %}
 {% endif %}

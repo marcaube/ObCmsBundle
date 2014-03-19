@@ -61,7 +61,7 @@
                                             {{ value }}
                                         {% endif %}
                                     {% elseif type == "boolean" %}
-                                        <i class="icon icon-{{ value?"ok":"ban-circle" }}"></i>
+                                        <i class="glyphicon glyphicon-{{ value?"ok":"ban-circle" }}"></i>
                                     {% else %}
                                         {% block default_cell %}{{ value|raw }}{% endblock %}
                                     {% endif %}
