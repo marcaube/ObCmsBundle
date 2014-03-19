@@ -34,7 +34,9 @@
         {% block body %}
             <header style="margin-bottom:12px;">
                 <div class="container">
-                    <img src="{{ logo }}" alt="" style="margin-top: 25px;"/>
+                    <a href="{{ path('ObCmsBundle_module_dashboard') }}">
+                        <img src="{{ logo }}" alt="" style="margin-top: 25px;"/>
+                    </a>
                 </div>
             </header>
             {% render controller("ob_cms.controller:menuAction", {'request': app.request}) %}
