@@ -2,14 +2,20 @@
 
 {% block cell_content %}
 
-    {% if field in adminClass.listLinks or k == 0 %}
-        <a href="{{ path('ObCmsBundle_module_edit', { 'id': entity.id, 'name': module }) }}">
-    {% endif %}
+    {% if value starts with 'http://' %}
+        <a href="{{ value }}" target="_blank">{{ value }}</a>
+    {% else %}
 
-    {{ value|raw }}
+        {% if field in adminClass.listLinks or k == 0 %}
+            <a href="{{ path('ObCmsBundle_module_edit', { 'id': entity.id, 'name': module }) }}">
+        {% endif %}
 
-    {% if field in adminClass.listLinks or k == 0 %}
-        </a>
+        {{ value|raw }}
+
+        {% if field in adminClass.listLinks or k == 0 %}
+            </a>
+        {% endif %}
+
     {% endif %}
 
 {% endblock %}
