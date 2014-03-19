@@ -116,7 +116,8 @@ class AdminController
         $entity = $adminClass->getClass();
         $entity = new $entity;
 
-        $formType = $adminClass->formType() ? : new AdminType($adminClass->formDisplay());
+        $formType = $adminClass->formType();
+        $formType = $formType ? new $formType() : new AdminType($adminClass->formDisplay());
         $form = $this->formFactory->create($formType, $entity);
 
         $template = $adminClass->newTemplate() ? : $this->templates['new'];
@@ -142,7 +143,8 @@ class AdminController
         $entity = $adminClass->getClass();
         $entity = new $entity;
 
-        $formType = $adminClass->formType() ? : new AdminType($adminClass->formDisplay());
+        $formType = $adminClass->formType();
+        $formType = $formType ? new $formType() : new AdminType($adminClass->formDisplay());
         $form = $this->createForm($formType, $entity);
 
         if ($form->bind($request)->isValid()) {
@@ -189,7 +191,8 @@ class AdminController
             throw $this->createNotFoundException('Unable to find ' . $name . ' entity.');
         }
 
-        $formType = $adminClass->formType() ? : new AdminType($adminClass->formDisplay());
+        $formType = $adminClass->formType();
+        $formType = $formType ? new $formType() : new AdminType($adminClass->formDisplay());
         $editForm = $this->formFactory->create($formType, $entity);
 
         $template = $adminClass->editTemplate() ? : $this->templates['edit'];
