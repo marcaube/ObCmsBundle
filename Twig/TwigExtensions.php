@@ -1,4 +1,5 @@
 <?php
+
 namespace Ob\CmsBundle\Twig;
 
 class TwigExtensions extends \Twig_Extension

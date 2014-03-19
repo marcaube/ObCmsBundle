@@ -44,7 +44,7 @@
                         {% for k, field in adminClass.listDisplay %}
 
                             {% if attribute(adminClass, field, [entity]) is defined %}
-                                {% set type = 'string' %}
+                                {% set type = varType(attribute(adminClass, field, [entity])) %}
                                 {% set value = attribute(adminClass, field, [entity]) %}
                             {% elseif attribute(entity, field) is defined %}
                                 {% set type = varType(attribute(entity, field)) %}
