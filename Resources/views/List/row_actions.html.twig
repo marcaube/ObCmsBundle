@@ -2,10 +2,13 @@
     <label class="control-label text-muted" for="actions">{% trans %}obcms.list.action_title{% endtrans %} :&nbsp;</label>
 
     <select name="action" id="actions" class="form-control input-sm" style="display: inline;max-width: 175px;">
-        <option value="">----------</option>
-        {%  for action in adminClass.listActions %}
-            <option value="{{ action }}">{{ ( module ~ '.action_' ~ action)|trans }}</option>
-        {% endfor %}
+        <option value=""></option>
+        {% if adminClass.listActions|length > 0 %}
+            {%  for action in adminClass.listActions %}
+                <option value="{{ action }}">{{ ( module ~ '.action_' ~ action)|trans }}</option>
+            {% endfor %}
+            <option disabled="disabled">----</option>
+        {% endif %}
         <option value="delete-action">{% trans %}obcms.list.action_delete{% endtrans %}</option>
     </select>
 
