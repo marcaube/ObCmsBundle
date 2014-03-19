@@ -43,8 +43,13 @@
 
                         {% for k, field in adminClass.listDisplay %}
 
-                            {% set type = varType(attribute(entity, field)) %}
-                            {% set value = attribute(entity, field) %}
+                            {% if attribute(entity, field) is defined %}
+                                {% set type = varType(attribute(entity, field)) %}
+                                {% set value = attribute(entity, field) %}
+                            {% else %}
+                                {% set type = 'string' %}
+                                {% set value = attribute(adminClass, field, [entity]) %}
+                            {% endif %}
 
                             <td {% if type in ["boolean", "integer"] %}class="text-center"{% endif %}>
 
