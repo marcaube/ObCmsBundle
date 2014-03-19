@@ -43,12 +43,15 @@
 
                         {% for k, field in adminClass.listDisplay %}
 
-                            {% if attribute(entity, field) is defined %}
+                            {% if attribute(adminClass, field, [entity]) is defined %}
+                                {% set type = 'string' %}
+                                {% set value = attribute(adminClass, field, [entity]) %}
+                            {% elseif attribute(entity, field) is defined %}
                                 {% set type = varType(attribute(entity, field)) %}
                                 {% set value = attribute(entity, field) %}
                             {% else %}
                                 {% set type = 'string' %}
-                                {% set value = attribute(adminClass, field, [entity]) %}
+                                {% set value = 'The field <code>' ~ field ~ '</code> couldn\'t be found.' %}
                             {% endif %}
 
                             {% include '@ObCms/Table/Cell/' ~ type ~ '.html.twig' %}
