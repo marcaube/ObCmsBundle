@@ -21,60 +21,6 @@ abstract class AbstractAdmin implements AdminInterface
     protected $repository;
 
     /**
-     * @var Request
-     */
-    protected $request;
-
-    /**
-     * The maximum number of objects shown on the list page
-     *
-     * @var int
-     */
-    protected $itemsPerPage;
-
-    /**
-     * The properties to display on the list page
-     *
-     * @var array
-     */
-    protected $listDisplay;
-
-    /**
-     * The properties on the listing page to display as a link
-     *
-     * @var array
-     */
-    protected $listLinks;
-
-    /**
-     * The properties with sorting enabled
-     *
-     * @var array
-     */
-    protected $listSort;
-
-    /**
-     * The properties on which we can do a text search
-     *
-     * @var array
-     */
-    protected $listTextSearch;
-
-    /**
-     * The properties available as extra-filters for advanced search
-     *
-     * @var array
-     */
-    protected $listFilters;
-
-    /**
-     * The actions that can be performed on the object from the list
-     *
-     * @var array
-     */
-    protected $listActions;
-
-    /**
      * Returns the Entity class
      *
      * @return string
