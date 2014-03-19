@@ -1,0 +1,26 @@
+{% extends templates['layout'] %}
+
+{% form_theme form templates['fields'] %}
+
+{% block content %}
+    <div class="text-right">
+        <a href="{{ path('ObCmsBundle_module_list', { 'name': module }) }}" class="btn btn-link" role="button">
+            <span class="glyphicon glyphicon-arrow-left"></span>
+            {% trans %}obcms.form.back_to_list{% endtrans %}
+        </a>
+    </div>
+
+    <h1 class="h3 page-header">{% block page_header %}{% endblock %}</h1>
+
+    <form method="post" {{ form_enctype(form) }} id="ob_cms-form">
+
+        {{ form_rest(form) }}
+
+        <div class="text-right">
+            <button type="submit" class="btn btn-primary" form="ob_cms-form">
+                <span class="glyphicon glyphicon-floppy-disk"></span>
+                {% trans %}obcms.form.edit{% endtrans %}
+            </button>
+        </div>
+    </form>
+{% endblock %}

@@ -182,7 +182,7 @@ class AdminController
         return $this->templating->renderResponse($template, array(
             'module' => $name,
             'entity' => $entity,
-            'edit_form' => $editForm->createView(),
+            'form' => $editForm->createView(),
             'previous'  =>  $request->server->get('HTTP_REFERER')? : null
         ));
     }
