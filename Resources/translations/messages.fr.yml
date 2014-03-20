@@ -7,6 +7,7 @@ obcms.connected_back: Revenir à l'utilisateur initial
 obcms.form.edit: Sauvegarder
 obcms.form.new: Sauvegarder
 obcms.form.back_to_list: Retourner à la liste
+obcms.form.cancel: Annuler
 
 # List
 obcms.list.new: Nouveau
