@@ -5,6 +5,11 @@
             <button class="btn btn-default btn-sm" type="submit">
                 <i class="glyphicon glyphicon-search"></i>
             </button>
+            {% if search|length > 0 %}
+                <a href="{{ path('ObCmsBundle_module_list', { 'name': module }) }}" class="btn btn-link btn-sm">
+                    reset
+                </a>
+            {% endif %}
         </span>
     </div>
 </form>
