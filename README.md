@@ -29,11 +29,11 @@
 * Add this line to your `composer.json`
 
 ```yaml
-    "require": {
-        ...
-        "ob/cms-bundle": "dev-master",
-        ...
-    },
+"require": {
+    ...
+    "ob/cms-bundle": "dev-master",
+    ...
+},
 ```
 
 * Run `php composer.phar update "ob/cms-bundle"`
@@ -41,26 +41,35 @@
 * Register the bundles in your `app/AppKernel.php`:
 
 ```php
-    <?php
-    ...
-    public function registerBundles()
-    {
-        $bundles = array(
-            ...
-            new Ob\CmsBundle\ObCmsBundle(),
-            new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
-            ...
-        );
-    ...
+<?php
+...
+public function registerBundles()
+{
+    $bundles = array(
+        ...
+        new Ob\CmsBundle\ObCmsBundle(),
+        new Mopa\Bundle\BootstrapBundle\MopaBootstrapBundle(),
+        new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
+        ...
+    );
+...
+```
+
+* Add configuration for Mopa Bundle
+
+```yaml
+# app/config/config.yml
+mopa_bootstrap:
+    form: ~
 ```
 
 * Last thing but not least is to import the routing
 
 ```yaml
-    # app/config/routing.yml
-    ob_cms:
-        resource: "@ObCmsBundle/Resources/config/routing.yml"
-        prefix:   /the-admin-prefix-of-your-choice
+# app/config/routing.yml
+ob_cms:
+    resource: "@ObCmsBundle/Resources/config/routing.yml"
+    prefix:   /the-admin-prefix-of-your-choice
 ```
 
 ## Create an Admin class

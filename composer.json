@@ -12,7 +12,9 @@
     "require": {
         "php": ">=5.3.3",
         "symfony/symfony": "2.*",
-        "knplabs/knp-paginator-bundle": "~2.4"
+        "knplabs/knp-paginator-bundle": "~2.4",
+        "mopa/bootstrap-bundle": "v3.0.0-beta3",
+        "twbs/bootstrap": "v3.0.0"
     },
     "autoload": {
         "psr-0": {

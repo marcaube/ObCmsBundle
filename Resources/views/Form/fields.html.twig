@@ -1,47 +1,57 @@
-{% extends 'form_div_layout.html.twig' %}
+{% extends 'MopaBootstrapBundle:Form:fields.html.twig' %}
 
-{% block form_row %}
+{% block date_widget %}
+{% spaceless %}
+{% if widget == 'single_text' %}
+    {% if datepicker is defined %}
+        <div class="input-group date">
+            {% if widget_addon_prepend|default(null) is not null %}
+                {% set widget_addon = widget_addon_prepend %}
+                {{ block('widget_addon') }}
+            {% endif %}
+            {% set attr = attr|merge({'class': attr.class|default('') ~ ' not-removable grd-white form-control'}) %}
+            <input type="text" {{ block('widget_attributes') }} value="{{ value }}"  data-form="datepicker" data-date-format="{{ format|lower }}"/>
+            {% if widget_addon_append|default(null) is not null %}
+                {% set widget_addon = widget_addon_append %}
+                {{ block('widget_addon') }}
+            {% endif %}
+            <script type="text/javascript">
+                $(document).ready(function () {
+                    $({{ id }}).datepicker({
+                        format: "yyyy-mm-dd",
+                        todayBtn: true,
+                        autoclose: true,
+                        todayHighlight: true
+                    });
+                    $({{ id }}).keydown(function(e) {
+                        if(e.which == 27) {
+                            $({{ id }}).datepicker('hide');
+                                return false;
+                            }
+                        });
+                });
+            </script>
+        </div>
+    {% else %}
+        {{ block('form_widget_simple') }}
+    {% endif %}
+    {{ block('form_message') }}
+{% else %}
+    {% set attr = attr|merge({'class': attr.class|default('inline')}) %}
+        {{ date_pattern|replace({
+            '{{ year }}':  form_widget(form.year, {'attr': {'class': attr.widget_class|default('') ~ ''}, 'horizontal_input_wrapper_class': horizontal_input_wrapper_class|default('col-lg-3')}),
+            '{{ month }}': form_widget(form.month, {'attr': {'class': attr.widget_class|default('') ~ ''}, 'horizontal_input_wrapper_class': horizontal_input_wrapper_class|default('col-lg-3')}),
+            '{{ day }}':   form_widget(form.day, {'attr': {'class': attr.widget_class|default('') ~ ''}, 'horizontal_input_wrapper_class': horizontal_input_wrapper_class|default('col-lg-3')}),
+        })|raw }}
+    {{ block('form_message') }}
+{% endif %}
+{% endspaceless %}
+{% endblock date_widget %}
+
+{% block collection_widget %}
     {% spaceless %}
-        <div class="form-group{% if errors|length > 0 %} has-error{% endif %}">
-            {{ form_label(form) }}
-            {{ form_widget(form) }}
-            {{ form_errors(form) }}
+        <div class="collection-items">
+            {{ block('form_widget') }}
         </div>
     {% endspaceless %}
-{% endblock form_row %}
-
-{% block form_widget_simple %}
-    {% spaceless %}
-        {% set type = type|default('text') == 'date' ? 'text' : type|default('text') %}
-        {% set attr = attr|merge({'class': attr.class|default('') ~ ' form-control'}) %}
-        <input type="{{ type }}" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}/>
-    {% endspaceless %}
-{% endblock form_widget_simple %}
-
-{% block textarea_widget %}
-    {% spaceless %}
-        <textarea class="form-control" {{ block('widget_attributes') }}>{{ value }}</textarea>
-    {% endspaceless %}
-{% endblock textarea_widget %}
-
-{% block choice_widget_collapsed %}
-    {% spaceless %}
-        {% if required and empty_value is none and not empty_value_in_choices %}
-            {% set required = false %}
-        {% endif %}
-        <select class="form-control" {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %}>
-            {% if empty_value is not none %}
-                <option value=""{% if required and value is empty %} selected="selected"{% endif %}>{{ empty_value|trans({}, translation_domain) }}</option>
-            {% endif %}
-            {% if preferred_choices|length > 0 %}
-                {% set options = preferred_choices %}
-                {{ block('choice_widget_options') }}
-                {% if choices|length > 0 and separator is not none %}
-                    <option disabled="disabled">{{ separator }}</option>
-                {% endif %}
-            {% endif %}
-            {% set options = choices %}
-            {{ block('choice_widget_options') }}
-        </select>
-    {% endspaceless %}
-{% endblock choice_widget_collapsed %}
+{% endblock collection_widget %}
