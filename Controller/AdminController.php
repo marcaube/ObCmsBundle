@@ -182,13 +182,14 @@ class AdminController
         return $this->templating->renderResponse($template, array(
             'module' => $name,
             'entity' => $entity,
-            'form' => $editForm->createView(),
-            'previous'  =>  $request->server->get('HTTP_REFERER')? : null
+            'form' => $editForm->createView()
         ));
     }
 
     /**
      * Executes an action on selected table rows
+     *
+     * TODO: move in an ObjectManager class
      *
      * @param string $name
      */
@@ -220,6 +221,8 @@ class AdminController
     /**
      * Get the list of filtered, sorted and paginated entities
      *
+     * TODO: move in an ObjectManager class
+     *
      * @param AdminInterface $adminClass
      * @param Request        $request
      *
@@ -246,6 +249,8 @@ class AdminController
     /**
      * Build the order by clause
      *
+     * TODO: move in an ObjectManager class
+     *
      * @param $orderByFields
      * @param $query
      */
@@ -264,6 +269,8 @@ class AdminController
 
     /**
      * Build the text search clause
+     *
+     * TODO: move in an ObjectManager class
      *
      * @param $searchFields
      * @param $searchQuery
