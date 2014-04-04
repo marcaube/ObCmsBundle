@@ -55,3 +55,60 @@
         </div>
     {% endspaceless %}
 {% endblock collection_widget %}
+
+{% block choice_widget_expanded %}
+{% spaceless %}
+    {% set label_attr = label_attr|merge({'class': (label_attr.class|default(''))}) %}
+    {% set label_attr = label_attr|merge({'class': (label_attr.class ~ ' ' ~ (widget_type != '' ? (multiple ? 'checkbox' : 'radio') ~ '-' ~ widget_type : ''))}) %}
+    {% if expanded %}
+        {% set attr = attr|merge({'class': attr.class|default(horizontal_input_wrapper_class)}) %}
+        {#<div {{ block('widget_container_attributes') }}>#}
+        <div style="-webkit-column-count: 3; -moz-column-count: 3; column-count: 3; -webkit-column-gap: 20px; -moz-column-gap: 20px; column-gap: 20px;">
+    {% endif %}
+    {% for child in form %}
+        {% if widget_type != 'inline' %}
+        <div class="{{ multiple ? 'checkbox' : 'radio' }}">
+        {% endif %}
+            <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>
+                {{ form_widget(child, {'horizontal_label_class': horizontal_label_class, 'horizontal_input_wrapper_class': horizontal_input_wrapper_class, 'attr': {'class': attr.widget_class|default('')}}) }}
+                {{ child.vars.label|trans({}, translation_domain) }}
+            </label>
+        {% if widget_type != 'inline' %}
+        </div>
+        {% endif %}
+    {% endfor %}
+    {{ block('form_message') }}
+    {% if expanded %}
+        </div>
+    {% endif %}
+{% endspaceless %}
+{% endblock choice_widget_expanded %}
+
+{% block checkbox_widget %}
+{% spaceless %}
+{% if label is not sameas(false) and label is empty %}
+    {% set label = name|humanize %}
+{% endif %}
+{% if form.parent != null and 'choice' not in form.parent.vars.block_prefixes %}
+{#<div class="{{ horizontal_input_wrapper_class}}">#}
+<div>
+    <div class="checkbox">
+{% endif %}
+
+{% if form.parent != null and 'choice' not in form.parent.vars.block_prefixes and label_render %}
+    <label class="{% if inline is defined and inline %}checkbox-inline{% endif %}">
+{% endif %}
+        <input type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %}/>
+{% if form.parent != null and 'choice' not in form.parent.vars.block_prefixes %}
+    {% if label_render and widget_checkbox_label in ['both', 'widget'] %}
+        {{ label|trans({}, translation_domain) }}
+    </label>
+    {% endif %}
+{% endif %}
+{% if form.parent != null and 'choice' not in form.parent.vars.block_prefixes %}
+    </div>
+    {{ block('form_message') }}
+</div>
+{% endif %}
+{% endspaceless %}
+{% endblock checkbox_widget %}
