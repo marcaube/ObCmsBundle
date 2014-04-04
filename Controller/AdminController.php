@@ -127,7 +127,10 @@ class AdminController
         $query = $this->getQuery($adminClass, $request);
         $entities = $query->execute();
 
-        return $this->exporter->export($name . '.' . $format, $format, $entities, $adminClass->listExport());
+        $now = new \DateTime();
+        $filename = $now->format('Y-m-d-') . $name . '.' . $format;
+
+        return $this->exporter->export($filename, $format, $entities, $adminClass->listExport());
     }
 
     /**
