@@ -2,6 +2,8 @@
 
 namespace Ob\CmsBundle\Controller;
 
+use Doctrine\ORM\QueryBuilder;
+use Ob\CmsBundle\Export\ExporterInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Templating\EngineInterface;
@@ -27,6 +29,7 @@ class AdminController
     private $paginator;
     private $container;
     private $templates;
+    private $exporter;
     
     public function __construct(
         EngineInterface $templating,
@@ -36,7 +39,8 @@ class AdminController
         $session,
         Paginator $paginator,
         AdminContainer $container,
-        $templates
+        $templates,
+        ExporterInterface $exporter
     )
     {
         $this->templating = $templating;
@@ -47,6 +51,7 @@ class AdminController
         $this->paginator = $paginator;
         $this->container = $container;
         $this->templates = $templates;
+        $this->exporter = $exporter;
     }
 
     /**
@@ -95,7 +100,7 @@ class AdminController
         $this->executeAction($request, $name);
 
         $adminClass = $this->container->getClass($name);
-        $entities = $this->getEntities($adminClass, $request);
+        $entities = $this->getPagination($adminClass, $request);
 
         $template = $adminClass->listTemplate() ? : $this->templates['list'];
 
@@ -105,6 +110,24 @@ class AdminController
             'entities'    => $entities,
             'search'      => $request->query->get('search') ? : null,
         ));
+    }
+
+    /**
+     * Export the listing
+     *
+     * @param Request $request
+     * @param string  $name
+     * @param string  $format
+     *
+     * @return Response
+     */
+    public function exportAction(Request $request, $name, $format)
+    {
+        $adminClass = $this->container->getClass($name);
+        $query = $this->getQuery($adminClass, $request);
+        $entities = $query->execute();
+
+        return $this->exporter->export($name . '.' . $format, $format, $entities, $adminClass->listExport());
     }
 
     /**
@@ -218,6 +241,21 @@ class AdminController
         }
     }
 
+    private function getQuery(AdminInterface $adminClass, Request $request)
+    {
+        $repository = $this->entityManager->getRepository($adminClass->getRepository());
+        /** @var QueryBuilder $query */
+        $query = $repository->createQueryBuilder('o');
+
+        // Search
+        $this->buildSearch($adminClass->listSearch(), $request->query->get('search') ? : null, $query);
+
+        // Order by
+        $this->buildOrderBy($adminClass->listOrderBy(), $query);
+
+        return $query->getQuery();
+    }
+
     /**
      * Get the list of filtered, sorted and paginated entities
      *
@@ -228,16 +266,9 @@ class AdminController
      *
      * @return mixed
      */
-    private function getEntities(AdminInterface $adminClass, Request $request)
+    private function getPagination(AdminInterface $adminClass, Request $request)
     {
-        $repository = $this->entityManager->getRepository($adminClass->getRepository());
-        $query = $repository->createQueryBuilder('o');
-
-        // Search
-        $this->buildSearch($adminClass->listSearch(), $request->query->get('search') ? : null, $query);
-
-        // Order by
-        $this->buildOrderBy($adminClass->listOrderBy(), $query);
+        $query = $this->getQuery($adminClass, $request);
 
         return $this->paginator->paginate(
             $query,

@@ -13,6 +13,7 @@ services:
             - @knp_paginator
             - @ob.cms.admin_container
             - %ob_cms.templates%
+            - @ob.cms.admin.exporter
         scope: request
 
     ob.cms.admin_container:
@@ -23,3 +24,12 @@ services:
         arguments: [ %ob_cms.configs% ]
         tags:
             - { name: twig.extension }
+
+    ob.cms.admin.exporter:
+        class: Ob\CmsBundle\Export\Exporter
+        calls:
+            - [ addExporter, [ @ob.cms.admin.xls_exporter ] ]
+
+    ob.cms.admin.xls_exporter:
+        class: Ob\CmsBundle\Export\XlsExporter
+        arguments: [ @phpexcel ]

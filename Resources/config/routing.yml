@@ -2,6 +2,10 @@ ObCmsBundle_module_list:
     pattern: /{name}
     defaults: { _controller: ob_cms.controller:listAction }
 
+ObCmsBundle_module_export:
+    pattern: /{name}/export/{format}
+    defaults: { _controller: ob_cms.controller:exportAction }
+
 ObCmsBundle_module_actions:
     pattern: /{name}/actions
     defaults: { _controller: ob_cms.controller:actionsAction }

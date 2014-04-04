@@ -50,6 +50,7 @@ public function registerBundles()
         new Ob\CmsBundle\ObCmsBundle(),
         new Mopa\Bundle\BootstrapBundle\MopaBootstrapBundle(),
         new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
+        new Liuggio\ExcelBundle\LiuggioExcelBundle(),
         ...
     );
 ...

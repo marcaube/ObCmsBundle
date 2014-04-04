@@ -81,4 +81,10 @@
         {% endif %}
 
     </table>
+
+    {% if adminClass.listExport %}
+        <div class="pull-right">
+            <a href="{{ path('ObCmsBundle_module_export', app.request.query.all|merge({'name': module, 'format': 'xls'})) }}">xls</a>
+        </div>
+    {% endif %}
 {% endblock %}

@@ -75,6 +75,11 @@ abstract class AbstractAdmin implements AdminInterface
         return array();
     }
 
+    public function listExport()
+    {
+        return array();
+    }
+
     public function formType()
     {
         return null;

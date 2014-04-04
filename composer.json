@@ -14,7 +14,8 @@
         "symfony/symfony": "2.*",
         "knplabs/knp-paginator-bundle": "~2.4",
         "mopa/bootstrap-bundle": "v3.0.0-beta3",
-        "twbs/bootstrap": "v3.0.0"
+        "twbs/bootstrap": "v3.0.0",
+        "liuggio/excelbundle": "~2.0"
     },
     "autoload": {
         "psr-0": {

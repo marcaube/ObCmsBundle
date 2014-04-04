@@ -22,6 +22,8 @@ interface AdminInterface
 
     public function listOrderBy();
 
+    public function listExport();
+
     public function formType();
 
     public function formDisplay();
