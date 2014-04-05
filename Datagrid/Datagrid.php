@@ -105,11 +105,16 @@ class Datagrid implements DatagridInterface
     private function buildOrderBy($orderByFields, $query)
     {
         if (count($orderByFields) > 0) {
-            foreach ($orderByFields as $k => $field) {
-                if ($k == 0) {
-                    $query->orderBy("o.$field", 'DESC');
+            $ctr = 0;
+
+            foreach ($orderByFields as $k => $v) {
+                $field = is_string($k) ? $k : $v;
+                $direction = is_string($k) ? $v : 'DESC';
+
+                if ($ctr++ == 0) {
+                    $query->orderBy("o.$field", $direction);
                 } else {
-                    $query->addOrderBy("o.$field", 'DESC');
+                    $query->addOrderBy("o.$field", $direction);
                 }
             }
         }
