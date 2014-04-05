@@ -10,8 +10,8 @@ services:
             - @form.factory
             - @router
             - @session
-            - @knp_paginator
             - @ob.cms.admin_container
+            - @ob.cms.admin.datagrid
             - %ob_cms.templates%
             - @ob.cms.admin.exporter
         scope: request
@@ -33,3 +33,8 @@ services:
     ob.cms.admin.xls_exporter:
         class: Ob\CmsBundle\Export\XlsExporter
         arguments: [ @phpexcel ]
+
+    ob.cms.admin.datagrid:
+        class: Ob\CmsBundle\Datagrid\Datagrid
+        arguments: [ @request, @doctrine.orm.entity_manager, @knp_paginator ]
+        scope: request

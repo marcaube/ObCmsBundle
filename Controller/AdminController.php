@@ -2,22 +2,18 @@
 
 namespace Ob\CmsBundle\Controller;
 
-use Doctrine\ORM\QueryBuilder;
-use Ob\CmsBundle\Export\ExporterInterface;
+use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Templating\EngineInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use Symfony\Component\Form\FormFactoryInterface;
-use Knp\Component\Pager\Paginator;
 use Ob\CmsBundle\Admin\AdminContainer;
-
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-
+use Ob\CmsBundle\Datagrid\DatagridInterface;
+use Ob\CmsBundle\Export\ExporterInterface;
 use Ob\CmsBundle\Form\AdminType;
-use Ob\CmsBundle\Admin\AdminInterface;
 
 class AdminController
 {
@@ -26,8 +22,8 @@ class AdminController
     private $formFactory;
     private $router;
     private $session;
-    private $paginator;
     private $container;
+    private $datagrid;
     private $templates;
     private $exporter;
     
@@ -37,8 +33,8 @@ class AdminController
         FormFactoryInterface $formFactory,
         RouterInterface $router,
         $session,
-        Paginator $paginator,
         AdminContainer $container,
+        DatagridInterface $datagrid,
         $templates,
         ExporterInterface $exporter
     )
@@ -48,8 +44,8 @@ class AdminController
         $this->formFactory = $formFactory;
         $this->router = $router;
         $this->session = $session;
-        $this->paginator = $paginator;
         $this->container = $container;
+        $this->datagrid = $datagrid;
         $this->templates = $templates;
         $this->exporter = $exporter;
     }
@@ -100,8 +96,7 @@ class AdminController
         $this->executeAction($request, $name);
 
         $adminClass = $this->container->getClass($name);
-        $entities = $this->getPagination($adminClass, $request);
-
+        $entities = $this->datagrid->getPaginatedEntities($adminClass);
         $template = $adminClass->listTemplate() ? : $this->templates['list'];
 
         return $this->templating->renderResponse($template, array(
@@ -124,8 +119,7 @@ class AdminController
     public function exportAction(Request $request, $name, $format)
     {
         $adminClass = $this->container->getClass($name);
-        $query = $this->getQuery($adminClass, $request);
-        $entities = $query->execute();
+        $entities = $this->datagrid->getEntities($adminClass);
 
         $now = new \DateTime();
         $filename = $now->format('Y-m-d-') . $name . '.' . $format;
@@ -217,8 +211,6 @@ class AdminController
     /**
      * Executes an action on selected table rows
      *
-     * TODO: move in an ObjectManager class
-     *
      * @param Request $request
      * @param string  $name
      */
@@ -244,96 +236,6 @@ class AdminController
                 }
                 $this->entityManager->flush();
             }
-        }
-    }
-
-    /**
-     * @param AdminInterface $adminClass
-     * @param Request        $request
-     *
-     * @return \Doctrine\ORM\Query
-     */
-    private function getQuery(AdminInterface $adminClass, Request $request)
-    {
-        $repository = $this->entityManager->getRepository($adminClass->getRepository());
-        /** @var QueryBuilder $query */
-        $query = $repository->createQueryBuilder('o');
-
-        // Search
-        $this->buildSearch($adminClass->listSearch(), $request->query->get('search') ? : null, $query);
-
-        // Order by
-        $this->buildOrderBy($adminClass->listOrderBy(), $query);
-
-        return $query->getQuery();
-    }
-
-    /**
-     * Get the list of filtered, sorted and paginated entities
-     *
-     * TODO: move in an ObjectManager class
-     *
-     * @param AdminInterface $adminClass
-     * @param Request        $request
-     *
-     * @return mixed
-     */
-    private function getPagination(AdminInterface $adminClass, Request $request)
-    {
-        $query = $this->getQuery($adminClass, $request);
-
-        return $this->paginator->paginate(
-            $query,
-            $request->query->get('page', 1),
-            $adminClass->listPageItems()
-        );
-    }
-
-    /**
-     * Build the order by clause
-     *
-     * TODO: move in an ObjectManager class
-     *
-     * @param $orderByFields
-     * @param $query
-     */
-    private function buildOrderBy($orderByFields, $query)
-    {
-        if (count($orderByFields) > 0) {
-            foreach ($orderByFields as $k => $field) {
-                if ($k == 0) {
-                    $query->orderBy("o.$field", 'DESC');
-                } else {
-                    $query->addOrderBy("o.$field", 'DESC');
-                }
-            }
-        }
-    }
-
-    /**
-     * Build the text search clause
-     *
-     * TODO: move in an ObjectManager class
-     *
-     * @param $searchFields
-     * @param $searchQuery
-     * @param $query
-     */
-    private function buildSearch($searchFields, $searchQuery, $query)
-    {
-        if (count($searchFields) > 0 && $searchQuery) {
-            $params = array();
-
-            foreach ($searchFields as $k => $field) {
-                if ($k == 0) {
-                    $query->where($query->expr()->like("o.$field", "?$k"));
-                } else {
-                    $query->orWhere($query->expr()->like("o.$field", "?$k"));
-                }
-                $params[$k] = '%' .$searchQuery . '%';
-            }
-
-            $query->setParameters($params);
         }
     }
 }
