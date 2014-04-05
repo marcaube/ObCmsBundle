@@ -2,8 +2,6 @@
 
 namespace Ob\CmsBundle\Admin;
 
-use Symfony\Component\HttpFoundation\Request;
-
 abstract class AbstractAdmin implements AdminInterface
 {
     /**

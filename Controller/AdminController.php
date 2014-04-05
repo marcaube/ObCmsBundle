@@ -136,9 +136,10 @@ class AdminController
     /**
      * Display the form to create a new entity
      *
-     * @param string $name
+     * @param Request $request
+     * @param string  $name
      *
-     * @return Response
+     * @return Response|RedirectResponse
      */
     public function newAction(Request $request, $name)
     {
@@ -175,8 +176,9 @@ class AdminController
     /**
      * Display the form to edit an entity
      *
-     * @param string $name
-     * @param int    $id
+     * @param Request $request
+     * @param string  $name
+     * @param int     $id
      *
      * @return Response
      *
@@ -217,7 +219,8 @@ class AdminController
      *
      * TODO: move in an ObjectManager class
      *
-     * @param string $name
+     * @param Request $request
+     * @param string  $name
      */
     private function executeAction(Request $request, $name)
     {
@@ -244,6 +247,12 @@ class AdminController
         }
     }
 
+    /**
+     * @param AdminInterface $adminClass
+     * @param Request        $request
+     *
+     * @return \Doctrine\ORM\Query
+     */
     private function getQuery(AdminInterface $adminClass, Request $request)
     {
         $repository = $this->entityManager->getRepository($adminClass->getRepository());
