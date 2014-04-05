@@ -2,11 +2,14 @@
     <form action="" class="form-inline" method="GET">
 
         {% for filter, class in adminClass.listFilter %}
-            <select name="filter[{{ filter }}]" id="actions" class="form-control input-sm" style="display: inline;max-width: 175px;">
+
+            {% set selected = selectedFilters[filter] is defined ? selectedFilters[filter] : null %}
+
+            <select name="filter[{{ filter }}]" id="actions" class="form-control input-sm" style="display: inline;max-width: 125px;">
                 <option value="">{{ (module ~ '.filter_' ~ filter)|trans }}</option>
-                {% for entity in filters[filter] %}
-                    {% set selected = selectedFilters[filter] is defined ? selectedFilters[filter] : null %}
-                    <option value="{{ entity.id }}"{% if entity.id == selected %}selected{% endif %}>{{ entity }}</option>
+                {% for key, value in filters[filter] %}
+                    {% set key = value.id is defined ? value.id : key %}
+                    <option value="{{ key }}"{% if key == selected %} selected{% endif %}>{{ value }}</option>
                 {% endfor %}
             </select>
         {% endfor %}

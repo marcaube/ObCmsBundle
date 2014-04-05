@@ -85,8 +85,12 @@ class Datagrid implements DatagridInterface
 
         foreach ($admin->listFilter() as $name => $class)
         {
-            $repository = $this->objectManager->getRepository($class);
-            $filterValues = $repository->findAll();
+            if (gettype($class) == 'array') {
+                $filterValues = $class;
+            } else {
+                $repository = $this->objectManager->getRepository($class);
+                $filterValues = $repository->findAll();
+            }
 
             $filters[$name] = $filterValues;
         }
