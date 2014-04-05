@@ -3,6 +3,14 @@
 
         <thead>
             {% if adminClass.listDisplay %}
+                {% if adminClass.listFilter|length > 0 %}
+                    <tr>
+                        <td colspan="{{ adminClass.listDisplay|length + 1 }}">
+                            {% include "ObCmsBundle:List:form_filters.html.twig" %}
+                        </td>
+                    </tr>
+                {% endif %}
+
                 <tr>
                     <td colspan="{{ adminClass.listDisplay|length + 1 }}">
                         {% include "ObCmsBundle:List:row_actions.html.twig" %}

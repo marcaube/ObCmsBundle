@@ -18,6 +18,8 @@ interface AdminInterface
 
     public function listSearch();
 
+    public function listFilter();
+
     public function listActions();
 
     public function listOrderBy();

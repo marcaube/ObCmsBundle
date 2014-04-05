@@ -17,6 +17,7 @@ obcms.list.action_execute: Executer
 obcms.list.action_confirm: Êtes-vous certain de vouloir continuer?
 obcms.list.action_of: de
 obcms.list.action_selected: selectionné
+obcms.list.filters_filter: Filtrer
 
 obcms.pagination.count_prefix: ''
 obcms.pagination.count_to: à

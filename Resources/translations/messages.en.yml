@@ -17,6 +17,7 @@ obcms.list.action_execute: Execute
 obcms.list.action_confirm: Are you sure about that?
 obcms.list.action_of: of
 obcms.list.action_selected: selected
+obcms.list.filters_filter: Filter
 
 obcms.pagination.count_prefix: Showing
 obcms.pagination.count_to: to

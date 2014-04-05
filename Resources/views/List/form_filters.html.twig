@@ -1,0 +1,22 @@
+<div class="pull-right">
+    <form action="" class="form-inline" method="GET">
+
+        {% for filter, class in adminClass.listFilter %}
+            <select name="filter[{{ filter }}]" id="actions" class="form-control input-sm" style="display: inline;max-width: 175px;">
+                <option value="">{{ (module ~ '.filter_' ~ filter)|trans }}</option>
+                {% for entity in filters[filter] %}
+                    {% set selected = selectedFilters[filter] is defined ? selectedFilters[filter] : null %}
+                    <option value="{{ entity.id }}"{% if entity.id == selected %}selected{% endif %}>{{ entity }}</option>
+                {% endfor %}
+            </select>
+        {% endfor %}
+
+        <input type="submit" class="btn btn-default btn-sm" value="{% trans %}obcms.list.filters_filter{% endtrans %}">
+
+        {% if selectedFilters|length > 0 %}
+            <a href="{{ path('ObCmsBundle_module_list', { 'name': module }) }}" class="btn btn-link btn-sm">
+                reset
+            </a>
+        {% endif %}
+    </form>
+</div>

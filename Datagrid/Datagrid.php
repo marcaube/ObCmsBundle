@@ -39,6 +39,7 @@ class Datagrid implements DatagridInterface
 
         $query = $repository->createQueryBuilder('o');
 
+        $this->filter($admin, $this->request->query->get('filter') ? : null, $query);
         $this->buildSearch($admin->listSearch(), $this->request->query->get('search') ? : null, $query);
         $this->buildOrderBy($admin->listOrderBy(), $query);
 
@@ -72,6 +73,28 @@ class Datagrid implements DatagridInterface
     }
 
     /**
+     * @param AdminInterface $admin
+     *
+     * TODO: order by value numerically|alphabetically
+     *
+     * @return array
+     */
+    public function getFilters(AdminInterface $admin)
+    {
+        $filters = array();
+
+        foreach ($admin->listFilter() as $name => $class)
+        {
+            $repository = $this->objectManager->getRepository($class);
+            $filterValues = $repository->findAll();
+
+            $filters[$name] = $filterValues;
+        }
+
+        return $filters;
+    }
+
+    /**
      * Build the text search clause
      *
      * @param array        $searchFields
@@ -80,24 +103,48 @@ class Datagrid implements DatagridInterface
      */
     private function buildSearch($searchFields, $searchQuery, $query)
     {
-        if (count($searchFields) > 0 && $searchQuery) {
-            $params = array();
+        if (count($searchFields) == 0 || !$searchQuery) {
+            return;
+        }
 
-            foreach ($searchFields as $k => $field) {
-                $method = ($k == 0) ? 'Where' : 'orWhere';
-
-                if (strpos($field, '.') !== false) {
-                    list($entity, $column) = explode('.', $field);
-                    $query->join("o.$entity", $entity);
-                    $query->{$method}($query->expr()->like("$field", "?$k"));
-                } else {
-                    $query->{$method}($query->expr()->like("o.$field", "?$k"));
-                }
-
-                $params[$k] = '%' .$searchQuery . '%';
+        foreach ($searchFields as $k => $field) {
+            if (strpos($field, '.') !== false) {
+                list($entity, $column) = explode('.', $field);
+                $query->join("o.$entity", $entity);
+                $query->orWhere($query->expr()->like("$field", "?$k"));
+            } else {
+                $query->orWhere($query->expr()->like("o.$field", "?$k"));
             }
 
-            $query->setParameters($params);
+            $query->setParameter($k, '%' .$searchQuery . '%');
+        }
+    }
+
+    /**
+     * @param AdminInterface $admin
+     * @param array          $filterQuery
+     * @param QueryBuilder   $query
+     */
+    private function filter(AdminInterface $admin, $filterQuery, $query)
+    {
+        if (count($admin->listFilter()) > 0 && !$filterQuery) {
+            return;
+        }
+
+        $filterFields = $admin->listFilter();
+
+        foreach ($filterQuery as $field => $value) {
+            // Try to infer if the $field is a collection (oneToMany, manyToMany)
+            $isCollection = method_exists($admin->getClass(), 'add' . ucwords(rtrim($field, 's')));
+
+            if ($value && array_key_exists($field, $filterFields)) {
+                if ($isCollection) {
+                    $query->join("o.$field", $field);
+                    $query->andWhere("$field = $value");
+                } else {
+                    $query->andWhere("o.$field = $value");
+                }
+            }
         }
     }
 
@@ -109,19 +156,14 @@ class Datagrid implements DatagridInterface
      */
     private function buildOrderBy($orderByFields, $query)
     {
-        if (count($orderByFields) > 0) {
-            $ctr = 0;
+        if (count($orderByFields) == 0) {
+            return;
+        }
 
-            foreach ($orderByFields as $k => $v) {
-                $field = is_string($k) ? $k : $v;
-                $direction = is_string($k) ? $v : 'DESC';
-
-                if ($ctr++ == 0) {
-                    $query->orderBy("o.$field", $direction);
-                } else {
-                    $query->addOrderBy("o.$field", $direction);
-                }
-            }
+        foreach ($orderByFields as $k => $v) {
+            $field = is_string($k) ? $k : $v;
+            $direction = is_string($k) ? $v : 'DESC';
+            $query->addOrderBy("o.$field", $direction);
         }
     }
 }

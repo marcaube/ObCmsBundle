@@ -98,12 +98,15 @@ class AdminController
         $adminClass = $this->container->getClass($name);
         $entities = $this->datagrid->getPaginatedEntities($adminClass);
         $template = $adminClass->listTemplate() ? : $this->templates['list'];
+        $filters = $this->datagrid->getFilters($adminClass);
 
         return $this->templating->renderResponse($template, array(
             'module'     => $name,
             'adminClass' => $adminClass,
-            'entities'    => $entities,
-            'search'      => $request->query->get('search') ? : null,
+            'entities'   => $entities,
+            'search'     => $request->query->get('search') ? : null,
+            'filters'    => $filters,
+            'selectedFilters' => $request->query->get('filter')
         ));
     }
 
