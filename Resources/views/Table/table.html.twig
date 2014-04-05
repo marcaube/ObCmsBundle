@@ -58,8 +58,16 @@
                                 {% set type = varType(attribute(entity, field)) %}
                                 {% set value = attribute(entity, field) %}
                             {% else %}
-                                {% set type = 'string' %}
-                                {% set value = 'The field <code>' ~ field ~ '</code> couldn\'t be found.' %}
+                                {% set parts = field|split('.') %}
+                                {% if attribute(entity, parts[0]) is defined %}
+                                    {% set relation = attribute(entity, parts[0]) %}
+                                    {% set type = varType(attribute(relation, parts[1])) %}
+                                    {% set value = attribute(relation, parts[1]) %}
+                                {% else %}
+                                    {% set type = 'string' %}
+                                    {% set value = 'The field <code>' ~ field ~ '</code> couldn\'t be found.' %}
+                                {% endif %}
+
                             {% endif %}
 
                             {% include '@ObCms/Table/Cell/' ~ type ~ '.html.twig' %}

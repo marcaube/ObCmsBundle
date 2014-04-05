@@ -73,7 +73,13 @@ class XlsExporter implements ExporterInterface
             $cell = 'A';
 
             foreach ($columnNames as $column) {
-                $value = $this->stringify($entity->{"get$column"}());
+                if (strpos($column, '.') !== false) {
+                    list($relation, $field) = explode('.', $column);
+                    $value = $entity->{"get$relation"}()->{"get$field"}();
+                } else {
+                    $value = $this->stringify($entity->{"get$column"}());
+                }
+
                 $sheet->setCellValue($cell . $firstDataRow, $value);
                 $cell++;
             }
