@@ -84,11 +84,16 @@ class Datagrid implements DatagridInterface
             $params = array();
 
             foreach ($searchFields as $k => $field) {
-                if ($k == 0) {
-                    $query->where($query->expr()->like("o.$field", "?$k"));
+                $method = ($k == 0) ? 'Where' : 'orWhere';
+
+                if (strpos($field, '.') !== false) {
+                    list($entity, $column) = explode('.', $field);
+                    $query->join("o.$entity", $entity);
+                    $query->{$method}($query->expr()->like("$field", "?$k"));
                 } else {
-                    $query->orWhere($query->expr()->like("o.$field", "?$k"));
+                    $query->{$method}($query->expr()->like("o.$field", "?$k"));
                 }
+
                 $params[$k] = '%' .$searchQuery . '%';
             }
 
