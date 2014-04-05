@@ -131,7 +131,7 @@ class Datagrid implements DatagridInterface
      */
     private function filter(AdminInterface $admin, $filterQuery, $query)
     {
-        if (count($admin->listFilter()) > 0 && !$filterQuery) {
+        if (count($admin->listFilter()) == 0 || !$filterQuery) {
             return;
         }
 
