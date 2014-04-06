@@ -3,6 +3,7 @@
 namespace Ob\CmsBundle\Controller;
 
 use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -147,6 +148,7 @@ class AdminController
         $formType = $adminClass->formType();
         $formType = $formType ? new $formType() : new AdminType($adminClass->formDisplay());
         $form = $this->formFactory->create($formType, $entity);
+        $form = $this->addRefererField($request, $form);
 
         if ($request->isMethod('POST')) {
             if ($form->submit($request)->isValid()) {
@@ -156,7 +158,8 @@ class AdminController
 
                 return new RedirectResponse($this->router->generate('ObCmsBundle_module_edit', array(
                     'name' => $name,
-                    'id' => $entity->getId()
+                    'id' => $entity->getId(),
+                    'referer' => $this->getReferer($request, $form)
                 )));
             }
         }
@@ -166,7 +169,8 @@ class AdminController
         return $this->templating->renderResponse($template, array(
             'module' => $name,
             'entity' => $entity,
-            'form'   => $form->createView()
+            'form'   => $form->createView(),
+            'referer' => $this->getReferer($request, $form)
         ));
     }
 
@@ -193,6 +197,7 @@ class AdminController
         $formType = $adminClass->formType();
         $formType = $formType ? new $formType() : new AdminType($adminClass->formDisplay());
         $editForm = $this->formFactory->create($formType, $entity);
+        $editForm = $this->addRefererField($request, $editForm);
 
         if ($request->isMethod('POST')) {
             if ($editForm->submit($request)->isValid()) {
@@ -207,8 +212,44 @@ class AdminController
         return $this->templating->renderResponse($template, array(
             'module' => $name,
             'entity' => $entity,
-            'form' => $editForm->createView()
+            'form' => $editForm->createView(),
+            'referer' => $this->getReferer($request, $editForm)
         ));
+    }
+
+    /**
+     * @param Request       $request
+     * @param FormInterface $form
+     *
+     * @return FormInterface
+     */
+    private function addRefererField($request, $form)
+    {
+        $referer = $this->getReferer($request, $form);
+
+        $form->add('referer', 'hidden', array('mapped' => false));
+        $form->get('referer')->setData($referer);
+
+        return $form;
+    }
+
+    /**
+     * @param Request       $request
+     * @param FormInterface $form
+     *
+     * @return string
+     */
+    private function getReferer($request, $form)
+    {
+        if ($form->has('referer')) {
+            $referer = $form->get('referer')->getData();
+        } elseif ($request->query->has('referer')) {
+            $referer = $request->query->get('referer');
+        } else {
+            $referer = $request->headers->get("referer");
+        }
+
+        return $referer;
     }
 
     /**

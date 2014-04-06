@@ -3,8 +3,10 @@
 {% form_theme form templates['fields'] %}
 
 {% block content %}
+    {% set backUrl = referer ? : path('ObCmsBundle_module_list', { 'name': module }) %}
+
     <div class="text-right">
-        <a href="{{ path('ObCmsBundle_module_list', { 'name': module }) }}" class="btn btn-link" role="button">
+        <a href="{{ backUrl }}" class="btn btn-link" role="button">
             <span class="glyphicon glyphicon-arrow-left"></span>
             {% trans %}obcms.form.back_to_list{% endtrans %}
         </a>
@@ -17,7 +19,7 @@
             {{ form_rest(form) }}
 
             <div class="form-group text-right">
-                <a href="{{ path('ObCmsBundle_module_list', { 'name': module }) }}" class="btn btn-default" role="button">
+                <a href="{{ backUrl }}" class="btn btn-default" role="button">
                     {% trans %}obcms.form.cancel{% endtrans %}
                 </a>
                 <button type="submit" class="btn btn-primary" form="ob_cms-form">
