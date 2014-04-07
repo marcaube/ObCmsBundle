@@ -84,17 +84,15 @@
             </tbody>
         {% endif %}
 
-        {% if entities.paginationData.pageCount > 1 %}
-            <tfoot>
-                <tr>
-                    <td colspan="{{ adminClass.listDisplay|length + 1 }}">
-                        <span class="text-muted">
-                            {% include "ObCmsBundle:Paginator:count.html.twig" %}
-                        </span>
-                    </td>
-                </tr>
-            </tfoot>
-        {% endif %}
+        <tfoot>
+            <tr>
+                <td colspan="{{ adminClass.listDisplay|length + 1 }}">
+                    <span class="text-muted">
+                        {% include "ObCmsBundle:Paginator:count.html.twig" %}
+                    </span>
+                </td>
+            </tr>
+        </tfoot>
 
     </table>
 
