@@ -29,4 +29,19 @@
             </div>
         </fieldset>
     </form>
+
+    {% if adminClass.inlineAdmin is defined %}
+        {% for relationName, adminClass in adminClass.inlineAdmin %}
+            {% set entities = attribute(entity, relationName) %}
+            {% set module = relationName %}
+
+            <h2 class="h4 page-header">{{ (module ~ '.list_header')|trans }}</h2>
+
+            <div>
+                {% include templates['table'] %}
+            </div>
+
+        {% endfor %}
+    {% endif %}
+
 {% endblock %}

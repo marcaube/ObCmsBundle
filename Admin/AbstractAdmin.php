@@ -107,4 +107,9 @@ abstract class AbstractAdmin implements AdminInterface
     {
         return null;
     }
+
+    public function inlineAdmin()
+    {
+        return null;
+    }
 }

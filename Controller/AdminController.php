@@ -168,6 +168,7 @@ class AdminController
 
         return $this->templating->renderResponse($template, array(
             'module' => $name,
+            'adminClass' => $adminClass,
             'entity' => $entity,
             'form'   => $form->createView(),
             'referer' => $this->getReferer($request, $form)
@@ -211,6 +212,7 @@ class AdminController
 
         return $this->templating->renderResponse($template, array(
             'module' => $name,
+            'adminClass' => $adminClass,
             'entity' => $entity,
             'form' => $editForm->createView(),
             'referer' => $this->getReferer($request, $editForm)

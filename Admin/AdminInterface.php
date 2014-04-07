@@ -35,4 +35,6 @@ interface AdminInterface
     public function newTemplate();
 
     public function editTemplate();
+
+    public function inlineAdmin();
 }
