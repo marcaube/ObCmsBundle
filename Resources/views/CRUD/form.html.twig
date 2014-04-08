@@ -16,7 +16,9 @@
 
     <form method="post" {{ form_enctype(form) }} id="ob_cms-form" class="form">
         <fieldset>
-            {{ form_rest(form) }}
+            {% block form_rows %}
+                {{ form_rest(form) }}
+            {% endblock %}
 
             <div class="form-group text-right">
                 <a href="{{ backUrl }}" class="btn btn-default" role="button">
