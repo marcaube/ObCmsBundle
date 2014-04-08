@@ -8,7 +8,7 @@
         <a href="{{ path('ObCmsBundle_module_edit', { 'id': entity.id, 'name': module }) }}">
     {% endif %}
 
-    {{ value }}
+    {{ value|number_format(2) }}
 
     {% if field in adminClass.listLinks or k == 0 %}
         </a>
