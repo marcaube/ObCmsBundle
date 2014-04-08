@@ -112,4 +112,14 @@ abstract class AbstractAdmin implements AdminInterface
     {
         return null;
     }
+
+    public function prePersist($entity)
+    {
+        return;
+    }
+
+    public function postPersist($entity)
+    {
+        return;
+    }
 }

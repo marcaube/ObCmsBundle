@@ -37,4 +37,8 @@ interface AdminInterface
     public function editTemplate();
 
     public function inlineAdmin();
+
+    public function prePersist($entity);
+
+    public function postPersist($entity);
 }

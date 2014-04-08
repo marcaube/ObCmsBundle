@@ -152,8 +152,10 @@ class AdminController
 
         if ($request->isMethod('POST')) {
             if ($form->submit($request)->isValid()) {
+                $adminClass->prePersist($entity);
                 $this->entityManager->persist($entity);
                 $this->entityManager->flush();
+                $adminClass->postPersist($entity);
                 $this->session->getFlashBag()->add('success', $name . '.create.success');
 
                 return new RedirectResponse($this->router->generate('ObCmsBundle_module_edit', array(
@@ -202,8 +204,10 @@ class AdminController
 
         if ($request->isMethod('POST')) {
             if ($editForm->submit($request)->isValid()) {
+                $adminClass->prePersist($entity);
                 $this->entityManager->persist($entity);
                 $this->entityManager->flush();
+                $adminClass->postPersist($entity);
                 $this->session->getFlashBag()->add('success', $name . '.edit.success');
             }
         }
