@@ -138,12 +138,12 @@
 {% spaceless %}
     {% set type = type|default('text') %}
     {#{% if type != 'hidden' and not inline and horizontal %}#}
-    {% if type != 'hidden' and not inline%}
+    {% if type != 'hidden' and not inline %}
     {#<div class="{{ horizontal_input_wrapper_class }}">#}
-    <div>
+        <div>
     {% endif %}
     {% if type != 'hidden' and ( widget_addon_prepend|default(null) is not null or widget_addon_append|default(null) is not null ) %}
-    <div class="input-group">
+    {#<div class="input-group">#}
         {% if widget_addon_prepend|default(null) is not null %}
             {% set widget_addon = widget_addon_prepend %}
             {{ block('widget_addon') }}
@@ -154,13 +154,13 @@
     {% endif %}
     {% set attr = attr|merge({'class': attr.class|default('') ~ ' form-control'}) %}
     {{ parent() }}
-    {% if type != 'hidden' and ( widget_addon_prepend|default(null) is not null or widget_addon_append|default(null) is not null ) %}
-        {% if widget_addon_append|default(null) is not null %}
-        {% set widget_addon = widget_addon_append %}
-        {{ block('widget_addon') }}
-        {% endif %}
-    </div>
-    {% endif %}
+    {#{% if type != 'hidden' and ( widget_addon_prepend|default(null) is not null or widget_addon_append|default(null) is not null ) %}#}
+        {#{% if widget_addon_append|default(null) is not null %}#}
+        {#{% set widget_addon = widget_addon_append %}#}
+        {#{{ block('widget_addon') }}#}
+        {#{% endif %}#}
+    {#</div>#}
+    {#{% endif %}#}
     {#{% if type != 'hidden' and not inline and horizontal %}#}
     {% if type != 'hidden' and not inline %}
         {{ block('form_message') }}
