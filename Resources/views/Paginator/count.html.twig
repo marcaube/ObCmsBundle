@@ -2,10 +2,12 @@
 {% set max = entities.paginationData.current * entities.paginationData.numItemsPerPage %}
 {% set total = entities.paginationData.totalCount %}
 
+{% if total > 0 %}
  {% trans %}obcms.pagination.count_prefix{% endtrans %}
  {{ min }}
  {% trans %}obcms.pagination.count_to{% endtrans %}
  {{ total > max ? max : total }}
  {% trans %}obcms.pagination.count_of{% endtrans %}
+{% endif %}
  {{ total }}
  {% trans %}obcms.pagination.count_suffix{% endtrans %}
