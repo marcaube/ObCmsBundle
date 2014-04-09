@@ -13,7 +13,7 @@
         "php": ">=5.3.3",
         "symfony/symfony": "2.*",
         "knplabs/knp-paginator-bundle": "~2.4",
-        "mopa/bootstrap-bundle": "v3.0.0-beta3",
+        "mopa/bootstrap-bundle": "dev-master",
         "twbs/bootstrap": "v3.0.0",
         "liuggio/excelbundle": "~2.0"
     },
