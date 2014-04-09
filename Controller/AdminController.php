@@ -280,7 +280,11 @@ class AdminController
                     if ($action == 'delete-action') {
                         $this->entityManager->remove($entity);
                     } else {
-                        $entity->{$action}();
+                        if (method_exists($adminClass, $action)) {
+                            $entity = $adminClass->{$action}($entity);
+                        } else {
+                            $entity->{$action}();
+                        }
                         $this->entityManager->persist($entity);
                     }
                 }
