@@ -88,7 +88,6 @@ class GuitarAdmin extends Admin
 {
     public function __construct()
     {
-        $this->repository = 'ObCmsDemoBundle:Guitar';
         $this->class = 'Ob\CmsDemoBundle\Entity\Guitar';
     }
 

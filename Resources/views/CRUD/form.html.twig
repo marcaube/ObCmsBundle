@@ -17,7 +17,7 @@
     <form method="post" {{ form_enctype(form) }} id="ob_cms-form" class="form" novalidate>
         <fieldset>
             {% block form_rows %}
-                {{ form_rest(form) }}
+                {{ form_widget(form) }}
             {% endblock %}
 
             <div class="form-group text-right">

@@ -12,13 +12,6 @@ abstract class AbstractAdmin implements AdminInterface
     protected $class;
 
     /**
-     * The repository used to query entities or documents
-     *
-     * @var string
-     */
-    protected $repository;
-
-    /**
      * Returns the Entity class
      *
      * @return string
@@ -26,16 +19,6 @@ abstract class AbstractAdmin implements AdminInterface
     public function getClass()
     {
         return $this->class;
-    }
-
-    /**
-     * Returns the Repository
-     *
-     * @return string
-     */
-    public function getRepository()
-    {
-        return $this->repository;
     }
 
     public function listPageItems()

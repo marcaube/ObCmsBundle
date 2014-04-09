@@ -6,8 +6,6 @@ interface AdminInterface
 {
     public function getClass();
 
-    public function getRepository();
-
     public function listPageItems();
 
     public function listDisplay();

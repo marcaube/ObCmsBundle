@@ -193,7 +193,7 @@ class AdminController
     public function editAction(Request $request, $name, $id)
     {
         $adminClass = $this->container->getClass($name);
-        $entity = $this->entityManager->getRepository($adminClass->getRepository())->find($id);
+        $entity = $this->entityManager->getRepository($adminClass->getClass())->find($id);
 
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find ' . $name . ' entity.');
@@ -275,7 +275,7 @@ class AdminController
 
             if (!empty($ids) and $action != '') {
                 $adminClass = $this->container->getClass($name);
-                $entities = $this->entityManager->getRepository($adminClass->getRepository())->findById($ids);
+                $entities = $this->entityManager->getRepository($adminClass->getClass())->findById($ids);
 
                 foreach ($entities as $entity) {
                     // TODO: check if function exists or raise Exception

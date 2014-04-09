@@ -35,7 +35,7 @@ class Datagrid implements DatagridInterface
      */
     public function getQuery(AdminInterface $admin)
     {
-        $repository = $this->objectManager->getRepository($admin->getRepository());
+        $repository = $this->objectManager->getRepository($admin->getCLass());
 
         $query = $repository->createQueryBuilder('o');
 
