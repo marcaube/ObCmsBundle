@@ -94,7 +94,9 @@ class AdminController
      */
     public function listAction(Request $request, $name)
     {
-        $this->executeAction($request, $name);
+        if ($this->executeAction($request, $name)) {
+            return new RedirectResponse($this->router->generate('ObCmsBundle_module_list', array('name' => $name)));
+        }
 
         $adminClass = $this->container->getClass($name);
         $entities = $this->datagrid->getPaginatedEntities($adminClass);
@@ -290,6 +292,10 @@ class AdminController
                 }
                 $this->entityManager->flush();
             }
+
+            return true;
         }
+
+        return false;
     }
 }
