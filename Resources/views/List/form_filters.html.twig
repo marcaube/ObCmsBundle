@@ -3,8 +3,7 @@
 
         {% for filter, class in adminClass.listFilter %}
 
-            {% set selected = selectedFilters[filter] is defined ? selectedFilters[filter] : -1 %}
-
+            {% set selected = selectedFilters[filter] is defined and selectedFilters[filter] ? selectedFilters[filter] : -1 %}
             <select name="filter[{{ filter }}]" class="form-control input-sm" style="display: inline;max-width: 125px;">
                 <option value="">{{ (module ~ '.filter_' ~ filter)|trans }}</option>
                 {% for key, value in filters[filter] %}
