@@ -2,6 +2,8 @@
 
 namespace Ob\CmsBundle\Admin;
 
+use Doctrine\ORM\QueryBuilder;
+
 abstract class AbstractAdmin implements AdminInterface
 {
     /**
@@ -104,5 +106,10 @@ abstract class AbstractAdmin implements AdminInterface
     public function postPersist($entity)
     {
         return;
+    }
+
+    public function query(QueryBuilder $qb)
+    {
+        return $qb;
     }
 }

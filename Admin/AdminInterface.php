@@ -2,6 +2,8 @@
 
 namespace Ob\CmsBundle\Admin;
 
+use Doctrine\ORM\QueryBuilder;
+
 interface AdminInterface
 {
     public function getClass();
@@ -39,4 +41,6 @@ interface AdminInterface
     public function prePersist($entity);
 
     public function postPersist($entity);
+
+    public function query(QueryBuilder $qb);
 }

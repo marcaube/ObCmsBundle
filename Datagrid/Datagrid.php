@@ -38,7 +38,7 @@ class Datagrid implements DatagridInterface
         $repository = $this->objectManager->getRepository($admin->getCLass());
 
         $query = $repository->createQueryBuilder('o');
-
+        $query = $admin->query($query);
         $this->filter($admin, $this->request->query->get('filter') ? : null, $query);
         $this->buildSearch($admin->listSearch(), $this->request->query->get('search') ? : null, $query);
         $this->buildOrderBy($admin->listOrderBy(), $query);
@@ -111,17 +111,21 @@ class Datagrid implements DatagridInterface
             return;
         }
 
+        $expr = $query->expr()->orX();
+
         foreach ($searchFields as $k => $field) {
             if (strpos($field, '.') !== false) {
                 list($entity, $column) = explode('.', $field);
                 $query->join("o.$entity", $entity);
-                $query->orWhere($query->expr()->like("$field", "?$k"));
+                $expr->add($query->expr()->like("$field", "?$k"));
             } else {
-                $query->orWhere($query->expr()->like("o.$field", "?$k"));
+                $expr->add($query->expr()->like("o.$field", "?$k"));
             }
 
             $query->setParameter($k, '%' .$searchQuery . '%');
         }
+
+        $query->andWhere($expr);
     }
 
     /**
