@@ -122,7 +122,7 @@ class Datagrid implements DatagridInterface
                 $expr->add($query->expr()->like("o.$field", "?$k"));
             }
 
-            $query->setParameter($k, '%' .$searchQuery . '%');
+            $query->setParameter($k, '%' . $searchQuery . '%');
         }
 
         $query->andWhere($expr);
@@ -144,10 +144,20 @@ class Datagrid implements DatagridInterface
         foreach ($filterQuery as $field => $value) {
             // Try to infer if the $field is a collection (oneToMany, manyToMany)
             $isCollection = method_exists($admin->getClass(), 'add' . ucwords(rtrim($field, 's')));
+            $isRelation = null;
+
+            // Check if the $field is a relation (onToOne, manyToOne)
+            if (strpos($field, '.') !== false) {
+                list($entity, $column) = explode('.', $field);
+                $isRelation = method_exists($admin->getClass(), 'set' . ucwords($entity));
+            }
 
             if ($value !== null && $value !== '' && array_key_exists($field, $filterFields)) {
                 if ($isCollection) {
                     $query->join("o.$field", $field);
+                    $query->andWhere("$field = $value");
+                } elseif ($isRelation) {
+                    $query->join("o.$entity", $entity);
                     $query->andWhere("$field = $value");
                 } else {
                     $query->andWhere("o.$field = $value");
