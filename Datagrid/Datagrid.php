@@ -145,7 +145,7 @@ class Datagrid implements DatagridInterface
             // Try to infer if the $field is a collection (oneToMany, manyToMany)
             $isCollection = method_exists($admin->getClass(), 'add' . ucwords(rtrim($field, 's')));
 
-            if ($value && array_key_exists($field, $filterFields)) {
+            if ($value !== null && array_key_exists($field, $filterFields)) {
                 if ($isCollection) {
                     $query->join("o.$field", $field);
                     $query->andWhere("$field = $value");
