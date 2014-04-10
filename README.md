@@ -1,5 +1,3 @@
-![Listing Page](/Resources/doc/images/listing.png?raw=true)
-
 ### What this bundle is not …
 - Production ready
 - An example of beautiful code or best practices

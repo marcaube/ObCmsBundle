@@ -20,9 +20,7 @@ class AdminType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         foreach ($this->fields as $field) {
-            $builder->add($field, null, array(
-                'horizontal' => false
-            ));
+            $builder->add($field);
         }
     }
 
