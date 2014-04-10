@@ -3,6 +3,7 @@
 namespace Ob\CmsBundle\Admin;
 
 use Doctrine\ORM\QueryBuilder;
+use Symfony\Component\Form\FormInterface;
 
 abstract class AbstractAdmin implements AdminInterface
 {
@@ -98,12 +99,12 @@ abstract class AbstractAdmin implements AdminInterface
         return null;
     }
 
-    public function prePersist($entity)
+    public function prePersist($entity, FormInterface $form)
     {
         return;
     }
 
-    public function postPersist($entity)
+    public function postPersist($entity, FormInterface $form)
     {
         return;
     }

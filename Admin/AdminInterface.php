@@ -3,6 +3,7 @@
 namespace Ob\CmsBundle\Admin;
 
 use Doctrine\ORM\QueryBuilder;
+use Symfony\Component\Form\FormInterface;
 
 interface AdminInterface
 {
@@ -38,9 +39,9 @@ interface AdminInterface
 
     public function inlineAdmin();
 
-    public function prePersist($entity);
+    public function prePersist($entity, FormInterface $form);
 
-    public function postPersist($entity);
+    public function postPersist($entity, FormInterface $form);
 
     public function query(QueryBuilder $qb);
 }
