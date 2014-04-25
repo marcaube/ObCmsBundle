@@ -14,6 +14,7 @@ services:
             - @ob.cms.admin.datagrid
             - %ob_cms.templates%
             - @ob.cms.admin.exporter
+            - @event_dispatcher
         scope: request
 
     ob.cms.admin_container:

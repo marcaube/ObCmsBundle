@@ -10,9 +10,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Templating\EngineInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Ob\CmsBundle\Admin\AdminContainer;
 use Ob\CmsBundle\Datagrid\DatagridInterface;
+use Ob\CmsBundle\Event\CRUDEvent;
 use Ob\CmsBundle\Export\ExporterInterface;
 use Ob\CmsBundle\Form\AdminType;
 
@@ -27,6 +29,7 @@ class AdminController
     private $datagrid;
     private $templates;
     private $exporter;
+    private $dispatcher;
     
     public function __construct(
         EngineInterface $templating,
@@ -37,7 +40,8 @@ class AdminController
         AdminContainer $container,
         DatagridInterface $datagrid,
         $templates,
-        ExporterInterface $exporter
+        ExporterInterface $exporter,
+        EventDispatcherInterface $dispatcher
     )
     {
         $this->templating = $templating;
@@ -49,6 +53,7 @@ class AdminController
         $this->datagrid = $datagrid;
         $this->templates = $templates;
         $this->exporter = $exporter;
+        $this->dispatcher = $dispatcher;
     }
 
     /**
@@ -146,6 +151,9 @@ class AdminController
         $adminClass = $this->container->getClass($name);
         $entity = $adminClass->getClass();
         $entity = new $entity;
+
+        $event = new CRUDEvent($request, $entity);
+        $this->dispatcher->dispatch('ob_cms.new.init', $event);
 
         $formType = $adminClass->formType();
         $formType = $formType ? new $formType() : new AdminType($adminClass->formDisplay());
