@@ -16,6 +16,16 @@
             <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
             <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/css/bootstrap-theme.min.css" rel="stylesheet" type="text/css" />
             <link href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.min.css" rel="stylesheet" type="text/css" />
+            <style>
+                .form-group:before,
+                .form-group:after {
+                    content: " ";
+                    display: table;
+                }
+                .form-group:after {
+                    clear: both;
+                }
+            </style>
         {% endblock %}
 
         <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.7.1/modernizr.min.js"></script>
@@ -37,7 +47,7 @@
             <header style="margin-bottom:12px;">
                 <div class="container">
                     <a href="{{ path('ObCmsBundle_module_dashboard') }}">
-                        <img src="{{ logo }}" alt="" style="margin-top: 25px;max-width: 100%;height: auto;"/>
+                        <img src="{{ asset(logo) }}" alt="" style="margin-top: 25px;max-width: 100%;height: auto;"/>
                     </a>
                 </div>
             </header>
