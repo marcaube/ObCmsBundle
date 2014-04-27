@@ -7,7 +7,7 @@
     {% endif %}
 
     {%  if varClass(value) == "DateTime" %}
-        {{ value|date('Y-m-d h:i:s') }}
+        {{ value|date('Y-m-d H:i:s') }}
     {% else %}
         {{ value }}
     {% endif %}
