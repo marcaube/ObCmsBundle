@@ -44,13 +44,19 @@
         <![endif]-->
 
         {% block body %}
-            <header style="margin-bottom:12px;">
-                <div class="container">
-                    <a href="{{ path('ObCmsBundle_module_dashboard') }}">
-                        <img src="{{ asset(logo) }}" alt="" style="margin-top: 25px;max-width: 100%;height: auto;"/>
-                    </a>
-                </div>
-            </header>
+            {% block header %}
+                <header style="margin-bottom:12px;">
+                    <div class="container">
+                        {% block header_content %}
+                            <a href="{{ path('ObCmsBundle_module_dashboard') }}">
+                                <img src="{{ asset(logo) }}" alt="" style="margin-top: 25px;max-width: 100%;height: auto;"/>
+                            </a>
+                        {% endblock %}
+                    </div>
+                </header>
+            {% endblock %}
+
+
             {% render controller("ob_cms.controller:menuAction", {'request': app.request}) %}
 
             <div class="container">
