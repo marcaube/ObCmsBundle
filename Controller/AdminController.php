@@ -2,6 +2,7 @@
 
 namespace Ob\CmsBundle\Controller;
 
+use Ob\CmsBundle\Event\FormEvent;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -160,6 +161,9 @@ class AdminController
         $form = $this->formFactory->create($formType, $entity);
         $form = $this->addRefererField($request, $form);
 
+        $event = new FormEvent($form, $entity);
+        $this->dispatcher->dispatch('ob_cms.form.init', $event);
+
         if ($request->isMethod('POST')) {
             if ($form->submit($request)->isValid()) {
                 $adminClass->prePersist($entity, $form);
@@ -211,6 +215,9 @@ class AdminController
         $formType = $formType ? new $formType() : new AdminType($adminClass->formDisplay());
         $editForm = $this->formFactory->create($formType, $entity);
         $editForm = $this->addRefererField($request, $editForm);
+
+        $event = new FormEvent($editForm, $entity);
+        $this->dispatcher->dispatch('ob_cms.form.init', $event);
 
         if ($request->isMethod('POST')) {
             if ($editForm->submit($request)->isValid()) {
