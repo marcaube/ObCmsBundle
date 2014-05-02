@@ -140,6 +140,7 @@ class Datagrid implements DatagridInterface
         }
 
         $filterFields = $admin->listFilter();
+        $joinedRelations = array();
 
         foreach ($filterQuery as $field => $value) {
             // Try to infer if the $field is a collection (oneToMany, manyToMany)
@@ -157,8 +158,20 @@ class Datagrid implements DatagridInterface
                     $query->join("o.$field", $field);
                     $query->andWhere("$field = $value");
                 } elseif ($isRelation) {
-                    $query->join("o.$entity", $entity);
-                    $query->andWhere("$field = $value");
+                    if (!in_array($entity, $joinedRelations)) {
+                        $query->join("o.$entity", $entity);
+                        $joinedRelations[] = $entity;
+                    }
+
+                    // Check if the $field is a relation's relation (onToOne, manyToOne)
+                    if (method_exists($filterFields[$field], 'set' . ucwords($column))) {
+                        $query->andWhere("$field = $value");
+                    } else {
+                        // If not, we go full retard and assume it's a collection ... bring the facepalms!
+                        $query->join("$field", $column);
+                        $query->andWhere("$column = $value");
+                    }
+
                 } else {
                     $query->andWhere("o.$field = $value");
                 }
