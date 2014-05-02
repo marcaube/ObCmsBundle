@@ -75,7 +75,8 @@ class XlsExporter implements ExporterInterface
             foreach ($columnNames as $column) {
                 if (strpos($column, '.') !== false) {
                     list($relation, $field) = explode('.', $column);
-                    $value = $entity->{"get$relation"}()->{"get$field"}();
+                    $relation = $entity->{"get$relation"}();
+                    $value = $relation ? $relation->{"get$field"}() : "";
                 } else {
                     $value = $this->stringify($entity->{"get$column"}());
                 }
