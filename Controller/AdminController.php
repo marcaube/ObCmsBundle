@@ -134,7 +134,30 @@ class AdminController
         $entities = $this->datagrid->getEntities($adminClass);
 
         $now = new \DateTime();
-        $filename = $now->format('Y-m-d-') . $name . '.' . $format;
+        $filename = $now->format('Y-m-d-') . $name;
+
+        // Append filters to filename
+        $filters = $this->datagrid->getFilters($adminClass);
+        foreach ($request->query->get('filter') as $filter => $value) {
+            if ($value) {
+                // The array key and the entity id are not the same,
+                // so we need to loop through the array to find the
+                // entity we are looking for.
+                if (gettype($filters[$filter][$value]) == 'object') {
+                    foreach ($filters[$filter] as $object) {
+                        if ($object->getId() == $value) {
+                            $filename .= '-' . strtolower($object->__toString());
+                        }
+                    }
+                } else {
+                    $filename .= '-' . strtolower($filters[$filter][$value]);
+                }
+            }
+        }
+
+        // Remove characters that are not "filename-safe"
+        $filename = preg_replace('/([^\w\d\-_~\[\]\(\)])/', '', $filename);
+        $filename .= '.' . $format;
 
         return $this->exporter->export($filename, $format, $entities, $adminClass->listExport());
     }
