@@ -77,6 +77,10 @@ class XlsExporter implements ExporterInterface
                     list($relation, $field) = explode('.', $column);
                     $relation = $entity->{"get$relation"}();
                     $value = $relation ? $relation->{"get$field"}() : "";
+
+                    if (gettype($value) == 'object') {
+                        $value = $value->__toString();
+                    }
                 } else {
                     $value = $this->stringify($entity->{"get$column"}());
                 }
