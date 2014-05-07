@@ -83,8 +83,7 @@ class Datagrid implements DatagridInterface
     {
         $filters = array();
 
-        foreach ($admin->listFilter() as $name => $class)
-        {
+        foreach ($admin->listFilter() as $name => $class) {
             if (gettype($class) == 'array') {
                 $filterValues = $class;
             } else {

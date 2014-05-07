@@ -31,7 +31,7 @@ class AdminController
     private $templates;
     private $exporter;
     private $dispatcher;
-    
+
     public function __construct(
         EngineInterface $templating,
         ObjectManager $entityManager,
@@ -304,6 +304,8 @@ class AdminController
      *
      * @param Request $request
      * @param string  $name
+     *
+     * @return bool
      */
     private function executeAction(Request $request, $name)
     {
