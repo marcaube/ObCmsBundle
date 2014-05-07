@@ -156,7 +156,8 @@ class AdminController
         }
 
         // Remove characters that are not "filename-safe"
-        $filename = preg_replace('/([^\w\d\-_~\[\]\(\)])/', '', $filename);
+        $filename = preg_replace('/(\s)/', '-', $filename);
+        $filename = preg_replace('/([^\w\d\-_~\[\]\(\)])/u', '', $filename);
         $filename .= '.' . $format;
 
         return $this->exporter->export($filename, $format, $entities, $adminClass->listExport());
