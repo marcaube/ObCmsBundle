@@ -24,17 +24,8 @@
 
 
 ## Installation
-* Add this line to your `composer.json`
 
-```yaml
-"require": {
-    ...
-    "ob/cms-bundle": "dev-master",
-    ...
-},
-```
-
-* Run `php composer.phar update "ob/cms-bundle"`
+* Run `composer require ob/cms-bundle`
 
 * Register the bundles in your `app/AppKernel.php`:
 
