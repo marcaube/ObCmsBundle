@@ -133,24 +133,44 @@ class AdminController
         $adminClass = $this->container->getClass($name);
         $entities = $this->datagrid->getEntities($adminClass);
 
-        $now = new \DateTime();
-        $filename = $now->format('Y-m-d-') . $name;
+        $filename = $this->getExportFilename(
+            $name,
+            $this->datagrid->getFilters($adminClass),
+            $request->query->get('filter', array()),
+            $format
+        );
 
-        // Append filters to filename
-        $filters = $this->datagrid->getFilters($adminClass);
-        foreach ($request->query->get('filter', array()) as $filter => $value) {
+        return $this->exporter->export($filename, $format, $entities, $adminClass->listExport());
+    }
+
+    /**
+     * Builds a file name for the export from the admin class name and the datagrid filters
+     *
+     * @param string $className   The name of the admin class
+     * @param array  $filterNames The list of all datagrid filters available for this admin class
+     * @param array  $queryFilter The filters used
+     * @param string $format      The file format to export (e.g. xls)
+     *
+     * @return string
+     */
+    private function getExportFilename($className, $filterNames, $queryFilter, $format)
+    {
+        $now = new \DateTime();
+        $filename = $now->format('Y-m-d-') . $className;
+
+        foreach ($queryFilter as $filter => $value) {
             if ($value || $value == "0") {
                 // The array key and the entity id are not the same,
                 // so we need to loop through the array to find the
                 // entity we are looking for.
-                if (gettype($filters[$filter][$value]) == 'object') {
-                    foreach ($filters[$filter] as $object) {
+                if (gettype($filterNames[$filter][$value]) == 'object') {
+                    foreach ($filterNames[$filter] as $object) {
                         if ($object->getId() == $value) {
                             $filename .= '-' . strtolower($object->__toString());
                         }
                     }
                 } else {
-                    $filename .= '-' . strtolower($filters[$filter][$value]);
+                    $filename .= '-' . strtolower($filterNames[$filter][$value]);
                 }
             }
         }
@@ -160,7 +180,7 @@ class AdminController
         $filename = preg_replace('/([^\w\d\-_~\[\]\(\)])/u', '', $filename);
         $filename .= '.' . $format;
 
-        return $this->exporter->export($filename, $format, $entities, $adminClass->listExport());
+        return $filename;
     }
 
     /**
