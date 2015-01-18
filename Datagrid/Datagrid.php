@@ -111,11 +111,17 @@ class Datagrid implements DatagridInterface
         }
 
         $expr = $query->expr()->orX();
+        $joins = array();
 
         foreach ($searchFields as $k => $field) {
             if (strpos($field, '.') !== false) {
-                list($entity, $column) = explode('.', $field);
-                $query->join("o.$entity", $entity);
+                list($entity,) = explode('.', $field);
+
+                if (!in_array($entity, $joins)) {
+                    $query->join("o.$entity", $entity);
+                    $joins[] = $entity;
+                }
+
                 $expr->add($query->expr()->like("$field", "?$k"));
             } else {
                 $expr->add($query->expr()->like("o.$field", "?$k"));
