@@ -138,7 +138,7 @@ class AdminController
 
         // Append filters to filename
         $filters = $this->datagrid->getFilters($adminClass);
-        foreach ($request->query->get('filter') as $filter => $value) {
+        foreach ($request->query->get('filter', array()) as $filter => $value) {
             if ($value || $value == "0") {
                 // The array key and the entity id are not the same,
                 // so we need to loop through the array to find the
