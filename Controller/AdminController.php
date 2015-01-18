@@ -270,7 +270,7 @@ class AdminController
      *
      * @return FormInterface
      */
-    private function addRefererField($request, $form)
+    private function addRefererField(Request $request, FormInterface $form)
     {
         $referer = $this->getReferer($request, $form);
 
@@ -286,7 +286,7 @@ class AdminController
      *
      * @return string
      */
-    private function getReferer($request, $form)
+    private function getReferer(Request $request, FormInterface $form)
     {
         if ($form->has('referer')) {
             $referer = $form->get('referer')->getData();
