@@ -1,0 +1,4 @@
+rules:
+    # I only have form type, so no organizational problems here
+    symfony.form.form_type_not_in_type_form_folder:
+        enabled: false
