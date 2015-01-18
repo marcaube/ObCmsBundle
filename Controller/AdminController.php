@@ -319,13 +319,16 @@ class AdminController
                 $entities = $this->entityManager->getRepository($adminClass->getClass())->findById($ids);
 
                 foreach ($entities as $entity) {
-                    // TODO: check if function exists or raise Exception
                     if ($action == 'delete-action') {
                         $this->entityManager->remove($entity);
                     } else {
                         if (method_exists($adminClass, $action)) {
                             $entity = $adminClass->{$action}($entity);
                         } else {
+                            if (!method_exists($entity, $action)) {
+                                throw new \InvalidArgumentException(sprintf('The method %s does not exist on entity', $action));
+                            }
+
                             $entity->{$action}();
                         }
                         $this->entityManager->persist($entity);

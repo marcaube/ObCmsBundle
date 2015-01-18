@@ -75,8 +75,6 @@ class Datagrid implements DatagridInterface
     /**
      * @param AdminInterface $admin
      *
-     * TODO: order by value numerically|alphabetically
-     *
      * @return array
      */
     public function getFilters(AdminInterface $admin)
