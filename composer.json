@@ -1,14 +1,16 @@
 {
     "name": "ob/cms-bundle",
-    "description": "Simple CMS",
     "type": "symfony-bundle",
-    "keywords": ["symfony2", "cms", "admin", "ob", "marcaube"],
+    "description": "Simple admin generator bundle for your Symfony project",
+    "keywords": ["symfony2", "cms", "admin", "generator", "ob", "marcaube"],
     "homepage": "https://github.com/marcaube/ObCmsBundle",
+    "license": "MIT",
     "authors": [
         {
             "name": "Marc Aubé"
         }
     ],
+
     "require": {
         "php": ">=5.3.3",
         "symfony/symfony": "~2.3",
@@ -17,10 +19,14 @@
         "twbs/bootstrap": "~3.0",
         "liuggio/excelbundle": "~2.0"
     },
+
     "autoload": {
-        "psr-0": {
-            "Ob\\CmsBundle": ""
-        }
+        "psr-4": { "Ob\\CmsBundle\\": "" }
     },
-    "target-dir": "Ob/CmsBundle"
+
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    }
 }
