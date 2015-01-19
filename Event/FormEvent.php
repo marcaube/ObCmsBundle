@@ -23,7 +23,7 @@ class FormEvent extends Event
      */
     public function __construct(FormInterface $form, $entity)
     {
-        $this->form = $form;
+        $this->form   = $form;
         $this->entity = $entity;
     }
 

@@ -2,13 +2,13 @@
 
 namespace Ob\CmsBundle\Datagrid;
 
-use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Query;
+use Doctrine\ORM\QueryBuilder;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\Paginator;
 use Ob\CmsBundle\Admin\AdminInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 class Datagrid implements DatagridInterface
 {
@@ -23,9 +23,9 @@ class Datagrid implements DatagridInterface
      */
     public function __construct(Request $request, ObjectManager $objectManager, Paginator $paginator)
     {
-        $this->request = $request;
+        $this->request       = $request;
         $this->objectManager = $objectManager;
-        $this->paginator = $paginator;
+        $this->paginator     = $paginator;
     }
 
     /**
@@ -39,8 +39,8 @@ class Datagrid implements DatagridInterface
 
         $query = $repository->createQueryBuilder('o');
         $query = $admin->query($query);
-        $this->filter($admin, $this->request->query->get('filter') ? : null, $query);
-        $this->buildSearch($admin->listSearch(), $this->request->query->get('search') ? : null, $query);
+        $this->filter($admin, $this->request->query->get('filter') ?: null, $query);
+        $this->buildSearch($admin->listSearch(), $this->request->query->get('search') ?: null, $query);
         $this->buildOrderBy($admin->listOrderBy(), $query);
 
         return $query->getQuery();
@@ -66,7 +66,7 @@ class Datagrid implements DatagridInterface
     public function getPaginatedEntities(AdminInterface $admin)
     {
         $query = $this->getQuery($admin);
-        $page = $this->request->query->get('page', 1);
+        $page  = $this->request->query->get('page', 1);
         $limit = $admin->listPageItems();
 
         return $this->paginator->paginate($query, $page, $limit);
@@ -85,7 +85,7 @@ class Datagrid implements DatagridInterface
             if (gettype($class) == 'array') {
                 $filterValues = $class;
             } else {
-                $repository = $this->objectManager->getRepository($class);
+                $repository   = $this->objectManager->getRepository($class);
                 $filterValues = $repository->findAll();
             }
 
@@ -108,7 +108,7 @@ class Datagrid implements DatagridInterface
             return;
         }
 
-        $expr = $query->expr()->orX();
+        $expr  = $query->expr()->orX();
         $joins = array();
 
         foreach ($searchFields as $k => $field) {
@@ -142,18 +142,18 @@ class Datagrid implements DatagridInterface
             return;
         }
 
-        $filterFields = $admin->listFilter();
+        $filterFields    = $admin->listFilter();
         $joinedRelations = array();
 
         foreach ($filterQuery as $field => $value) {
             // Try to infer if the $field is a collection (oneToMany, manyToMany)
             $isCollection = method_exists($admin->getClass(), 'add' . ucwords(rtrim($field, 's')));
-            $isRelation = null;
+            $isRelation   = null;
 
             // Check if the $field is a relation (onToOne, manyToOne)
             if (strpos($field, '.') !== false) {
                 list($entity, $column) = explode('.', $field);
-                $isRelation = method_exists($admin->getClass(), 'set' . ucwords($entity));
+                $isRelation            = method_exists($admin->getClass(), 'set' . ucwords($entity));
             }
 
             if ($value !== null && $value !== '' && array_key_exists($field, $filterFields)) {
@@ -174,7 +174,6 @@ class Datagrid implements DatagridInterface
                         $query->join("$field", $column);
                         $query->andWhere("$column = $value");
                     }
-
                 } else {
                     $query->andWhere("o.$field = $value");
                 }
@@ -195,7 +194,7 @@ class Datagrid implements DatagridInterface
         }
 
         foreach ($orderByFields as $k => $v) {
-            $field = is_string($k) ? $k : $v;
+            $field     = is_string($k) ? $k : $v;
             $direction = is_string($k) ? $v : 'DESC';
             $query->addOrderBy("o.$field", $direction);
         }

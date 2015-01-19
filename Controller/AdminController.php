@@ -2,23 +2,23 @@
 
 namespace Ob\CmsBundle\Controller;
 
+use Doctrine\Common\Persistence\ObjectManager;
+use Ob\CmsBundle\Admin\AdminContainer;
 use Ob\CmsBundle\Admin\AdminInterface;
+use Ob\CmsBundle\Datagrid\DatagridInterface;
+use Ob\CmsBundle\Event\CRUDEvent;
 use Ob\CmsBundle\Event\FormEvent;
+use Ob\CmsBundle\Export\ExporterInterface;
+use Ob\CmsBundle\Form\AdminType;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Templating\EngineInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Doctrine\Common\Persistence\ObjectManager;
-use Ob\CmsBundle\Admin\AdminContainer;
-use Ob\CmsBundle\Datagrid\DatagridInterface;
-use Ob\CmsBundle\Event\CRUDEvent;
-use Ob\CmsBundle\Export\ExporterInterface;
-use Ob\CmsBundle\Form\AdminType;
 
 class AdminController
 {
@@ -44,18 +44,17 @@ class AdminController
         $templates,
         ExporterInterface $exporter,
         EventDispatcherInterface $dispatcher
-    )
-    {
-        $this->templating = $templating;
+    ) {
+        $this->templating    = $templating;
         $this->entityManager = $entityManager;
-        $this->formFactory = $formFactory;
-        $this->router = $router;
-        $this->session = $session;
-        $this->container = $container;
-        $this->datagrid = $datagrid;
-        $this->templates = $templates;
-        $this->exporter = $exporter;
-        $this->dispatcher = $dispatcher;
+        $this->formFactory   = $formFactory;
+        $this->router        = $router;
+        $this->session       = $session;
+        $this->container     = $container;
+        $this->datagrid      = $datagrid;
+        $this->templates     = $templates;
+        $this->exporter      = $exporter;
+        $this->dispatcher    = $dispatcher;
     }
 
     /**
@@ -106,16 +105,16 @@ class AdminController
         }
 
         $adminClass = $this->container->getClass($name);
-        $entities = $this->datagrid->getPaginatedEntities($adminClass);
-        $template = $adminClass->listTemplate() ? : $this->templates['list'];
-        $filters = $this->datagrid->getFilters($adminClass);
+        $entities   = $this->datagrid->getPaginatedEntities($adminClass);
+        $template   = $adminClass->listTemplate() ?: $this->templates['list'];
+        $filters    = $this->datagrid->getFilters($adminClass);
 
         return $this->templating->renderResponse($template, array(
-            'module'     => $name,
-            'adminClass' => $adminClass,
-            'entities'   => $entities,
-            'search'     => $request->query->get('search') ? : null,
-            'filters'    => $filters,
+            'module'          => $name,
+            'adminClass'      => $adminClass,
+            'entities'        => $entities,
+            'search'          => $request->query->get('search') ?: null,
+            'filters'         => $filters,
             'selectedFilters' => $request->query->get('filter')
         ));
     }
@@ -132,7 +131,7 @@ class AdminController
     public function exportAction(Request $request, $name, $format)
     {
         $adminClass = $this->container->getClass($name);
-        $entities = $this->datagrid->getEntities($adminClass);
+        $entities   = $this->datagrid->getEntities($adminClass);
 
         $filename = $this->getExportFilename(
             $name,
@@ -156,7 +155,7 @@ class AdminController
      */
     private function getExportFilename($className, $filterNames, $queryFilter, $format)
     {
-        $now = new \DateTime();
+        $now      = new \DateTime();
         $filename = $now->format('Y-m-d-') . $className;
 
         foreach ($queryFilter as $filter => $value) {
@@ -195,8 +194,8 @@ class AdminController
     public function newAction(Request $request, $name)
     {
         $adminClass = $this->container->getClass($name);
-        $entity = $adminClass->getClass();
-        $entity = new $entity;
+        $entity     = $adminClass->getClass();
+        $entity     = new $entity();
 
         $this->dispatcher->dispatch('ob_cms.new.init', new CRUDEvent($request, $entity));
         $form = $this->getFormForAdmin($request, $adminClass, $entity);
@@ -208,21 +207,21 @@ class AdminController
                 $this->session->getFlashBag()->add('success', $name . '.create.success');
 
                 return new RedirectResponse($this->router->generate('ObCmsBundle_module_edit', array(
-                    'name' => $name,
-                    'id' => $entity->getId(),
+                    'name'    => $name,
+                    'id'      => $entity->getId(),
                     'referer' => $this->getReferer($request, $form)
                 )));
             }
         }
 
-        $template = $adminClass->newTemplate() ? : $this->templates['new'];
+        $template = $adminClass->newTemplate() ?: $this->templates['new'];
 
         return $this->templating->renderResponse($template, array(
-            'module' => $name,
+            'module'     => $name,
             'adminClass' => $adminClass,
-            'entity' => $entity,
-            'form'   => $form->createView(),
-            'referer' => $this->getReferer($request, $form)
+            'entity'     => $entity,
+            'form'       => $form->createView(),
+            'referer'    => $this->getReferer($request, $form)
         ));
     }
 
@@ -240,7 +239,7 @@ class AdminController
     public function editAction(Request $request, $name, $id)
     {
         $adminClass = $this->container->getClass($name);
-        $entity = $this->entityManager->getRepository($adminClass->getClass())->find($id);
+        $entity     = $this->entityManager->getRepository($adminClass->getClass())->find($id);
 
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find ' . $name . ' entity.');
@@ -256,14 +255,14 @@ class AdminController
             }
         }
 
-        $template = $adminClass->editTemplate() ? : $this->templates['edit'];
+        $template = $adminClass->editTemplate() ?: $this->templates['edit'];
 
         return $this->templating->renderResponse($template, array(
-            'module' => $name,
+            'module'     => $name,
             'adminClass' => $adminClass,
-            'entity' => $entity,
-            'form' => $editForm->createView(),
-            'referer' => $this->getReferer($request, $editForm)
+            'entity'     => $entity,
+            'form'       => $editForm->createView(),
+            'referer'    => $this->getReferer($request, $editForm)
         ));
     }
 
@@ -278,8 +277,8 @@ class AdminController
     {
         $formType = $adminClass->formType();
         $formType = $formType ? new $formType() : new AdminType($adminClass->formDisplay());
-        $form = $this->formFactory->create($formType, $entity);
-        $form = $this->addRefererField($request, $form);
+        $form     = $this->formFactory->create($formType, $entity);
+        $form     = $this->addRefererField($request, $form);
 
         return $form;
     }
@@ -339,11 +338,11 @@ class AdminController
     {
         if ($request->getMethod() == 'POST') {
             $action = $request->get('action');
-            $ids = array_keys($request->get('action-checkbox', array()));
+            $ids    = array_keys($request->get('action-checkbox', array()));
 
             if (!empty($ids) and $action != '') {
                 $adminClass = $this->container->getClass($name);
-                $entities = $this->entityManager->getRepository($adminClass->getClass())->findById($ids);
+                $entities   = $this->entityManager->getRepository($adminClass->getClass())->findById($ids);
 
                 foreach ($entities as $entity) {
                     if ($action == 'delete-action') {

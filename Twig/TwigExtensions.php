@@ -26,7 +26,7 @@ class TwigExtensions extends \Twig_Extension
     {
         return array(
             'templates' => $this->configs['templates'],
-            'logo' => $this->configs['logo']
+            'logo'      => $this->configs['logo']
         );
     }
 

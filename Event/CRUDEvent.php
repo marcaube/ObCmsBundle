@@ -24,7 +24,7 @@ class CRUDEvent extends Event
     public function __construct(Request $request, $entity)
     {
         $this->request = $request;
-        $this->entity = $entity;
+        $this->entity  = $entity;
     }
 
     /**

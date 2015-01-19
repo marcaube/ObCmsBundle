@@ -71,7 +71,7 @@ abstract class AbstractAdmin implements AdminInterface
 
     public function formType()
     {
-        return null;
+        return;
     }
 
     public function formDisplay()
@@ -81,22 +81,22 @@ abstract class AbstractAdmin implements AdminInterface
 
     public function listTemplate()
     {
-        return null;
+        return;
     }
 
     public function newTemplate()
     {
-        return null;
+        return;
     }
 
     public function editTemplate()
     {
-        return null;
+        return;
     }
 
     public function inlineAdmin()
     {
-        return null;
+        return;
     }
 
     public function prePersist($entity, FormInterface $form)
