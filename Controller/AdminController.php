@@ -16,29 +16,81 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Templating\EngineInterface;
 
 class AdminController
 {
+    /**
+     * @var EngineInterface
+     */
     private $templating;
+
+    /**
+     * @var ObjectManager
+     */
     private $entityManager;
+
+    /**
+     * @var FormFactoryInterface
+     */
     private $formFactory;
+
+    /**
+     * @var RouterInterface
+     */
     private $router;
+
+    /**
+     * @var SessionInterface
+     */
     private $session;
+
+    /**
+     * @var AdminContainer
+     */
     private $container;
+
+    /**
+     * @var DatagridInterface
+     */
     private $datagrid;
+
+    /**
+     * @var array
+     */
     private $templates;
+
+    /**
+     * @var ExporterInterface
+     */
     private $exporter;
+
+    /**
+     * @var EventDispatcherInterface
+     */
     private $dispatcher;
 
+    /**
+     * @param EngineInterface          $templating
+     * @param ObjectManager            $entityManager
+     * @param FormFactoryInterface     $formFactory
+     * @param RouterInterface          $router
+     * @param SessionInterface         $session
+     * @param AdminContainer           $container
+     * @param DatagridInterface        $datagrid
+     * @param array                    $templates
+     * @param ExporterInterface        $exporter
+     * @param EventDispatcherInterface $dispatcher
+     */
     public function __construct(
         EngineInterface $templating,
         ObjectManager $entityManager,
         FormFactoryInterface $formFactory,
         RouterInterface $router,
-        $session,
+        SessionInterface $session,
         AdminContainer $container,
         DatagridInterface $datagrid,
         $templates,
