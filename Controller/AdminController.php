@@ -2,6 +2,7 @@
 
 namespace Ob\CmsBundle\Controller;
 
+use Ob\CmsBundle\Admin\AdminInterface;
 use Ob\CmsBundle\Event\FormEvent;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
@@ -331,8 +332,7 @@ class AdminController
     {
         if ($request->getMethod() == 'POST') {
             $action = $request->get('action');
-            $ids = $request->get('action-checkbox')?:array();
-            $ids = array_keys($ids);
+            $ids = array_keys($request->get('action-checkbox', array()));
 
             if (!empty($ids) and $action != '') {
                 $adminClass = $this->container->getClass($name);
@@ -342,15 +342,7 @@ class AdminController
                     if ($action == 'delete-action') {
                         $this->entityManager->remove($entity);
                     } else {
-                        if (method_exists($adminClass, $action)) {
-                            $entity = $adminClass->{$action}($entity);
-                        } else {
-                            if (!method_exists($entity, $action)) {
-                                throw new \InvalidArgumentException(sprintf('The method %s does not exist on entity', $action));
-                            }
-
-                            $entity->{$action}();
-                        }
+                        $entity = $this->executeActionOnAdminOrEntity($adminClass, $entity, $action);
                         $this->entityManager->persist($entity);
                     }
                 }
@@ -361,5 +353,27 @@ class AdminController
         }
 
         return false;
+    }
+
+    /**
+     * @param AdminInterface $adminClass
+     * @param object         $entity
+     * @param string         $action
+     *
+     * @return mixed
+     */
+    private function executeActionOnAdminOrEntity(AdminInterface $adminClass, $entity, $action)
+    {
+        if (method_exists($adminClass, $action)) {
+            $entity = $adminClass->{$action}($entity);
+        } else {
+            if (!method_exists($entity, $action)) {
+                throw new \InvalidArgumentException(sprintf('The method %s does not exist on entity', $action));
+            }
+
+            $entity->{$action}();
+        }
+
+        return $entity;
     }
 }
