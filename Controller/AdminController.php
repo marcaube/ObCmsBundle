@@ -142,6 +142,20 @@ class AdminController
     }
 
     /**
+     * @param string $name
+     *
+     * @return null|AdminInterface
+     */
+    private function getAdminClass($name)
+    {
+        if (!$adminClass = $this->container->getClass($name)) {
+            throw new NotFoundHttpException();
+        }
+
+        return $adminClass;
+    }
+
+    /**
      * Display the listing page.
      * Handles searches, sorting, actions and pagination on the list of entities.
      *
@@ -156,10 +170,7 @@ class AdminController
             return new RedirectResponse($this->router->generate('ObCmsBundle_module_list', array('name' => $name)));
         }
 
-        if (!$adminClass = $this->container->getClass($name)) {
-            throw new NotFoundHttpException();
-        }
-
+        $adminClass = $this->getAdminClass($name);
         $entities   = $this->datagrid->getPaginatedEntities($adminClass);
         $template   = $adminClass->listTemplate() ?: $this->templates['list'];
         $filters    = $this->datagrid->getFilters($adminClass);
@@ -185,10 +196,7 @@ class AdminController
      */
     public function exportAction(Request $request, $name, $format)
     {
-        if (!$adminClass = $this->container->getClass($name)) {
-            throw new NotFoundHttpException();
-        }
-
+        $adminClass = $this->getAdminClass($name);
         $entities   = $this->datagrid->getEntities($adminClass);
 
         $filename = $this->getExportFilename(
@@ -251,10 +259,7 @@ class AdminController
      */
     public function newAction(Request $request, $name)
     {
-        if (!$adminClass = $this->container->getClass($name)) {
-            throw new NotFoundHttpException();
-        }
-
+        $adminClass = $this->getAdminClass($name);
         $entity     = $adminClass->getClass();
         $entity     = new $entity();
 
@@ -299,9 +304,7 @@ class AdminController
      */
     public function editAction(Request $request, $name, $id)
     {
-        if (!$adminClass = $this->container->getClass($name)) {
-            throw new NotFoundHttpException();
-        }
+        $adminClass = $this->getAdminClass($name);
 
         if (!$entity = $this->entityManager->getRepository($adminClass->getClass())->find($id)) {
             throw new NotFoundHttpException(sprintf('Unable to find %s entity.', $name));
@@ -398,16 +401,14 @@ class AdminController
      */
     private function executeAction(Request $request, $name)
     {
+        $adminClass = $this->getAdminClass($name);
+
         if ($request->getMethod() == 'POST') {
             $action = $request->get('action');
             $ids    = array_keys($request->get('action-checkbox', array()));
 
             if (!empty($ids) and $action != '') {
-                if (!$adminClass = $this->container->getClass($name)) {
-                    throw new NotFoundHttpException();
-                }
-
-                $entities   = $this->entityManager->getRepository($adminClass->getClass())->findById($ids);
+                $entities = $this->entityManager->getRepository($adminClass->getClass())->findById($ids);
 
                 foreach ($entities as $entity) {
                     if ($action == 'delete-action') {
@@ -418,9 +419,9 @@ class AdminController
                     }
                 }
                 $this->entityManager->flush();
-            }
 
-            return true;
+                return true;
+            }
         }
 
         return false;
