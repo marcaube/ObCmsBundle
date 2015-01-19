@@ -1,3 +1,4 @@
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/marcaube/ObCmsBundle/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/marcaube/ObCmsBundle/?branch=master)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/eac79c7f-ad61-477f-bb2f-4f1f34b7dcb1/mini.png)](https://insight.sensiolabs.com/projects/eac79c7f-ad61-477f-bb2f-4f1f34b7dcb1)
 
 
