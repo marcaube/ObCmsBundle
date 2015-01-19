@@ -198,23 +198,13 @@ class AdminController
         $entity = $adminClass->getClass();
         $entity = new $entity;
 
-        $event = new CRUDEvent($request, $entity);
-        $this->dispatcher->dispatch('ob_cms.new.init', $event);
-
-        $formType = $adminClass->formType();
-        $formType = $formType ? new $formType() : new AdminType($adminClass->formDisplay());
-        $form = $this->formFactory->create($formType, $entity);
-        $form = $this->addRefererField($request, $form);
-
-        $event = new FormEvent($form, $entity);
-        $this->dispatcher->dispatch('ob_cms.form.init', $event);
+        $this->dispatcher->dispatch('ob_cms.new.init', new CRUDEvent($request, $entity));
+        $form = $this->getFormForAdmin($request, $adminClass, $entity);
+        $this->dispatcher->dispatch('ob_cms.form.init', new FormEvent($form, $entity));
 
         if ($request->isMethod('POST')) {
             if ($form->submit($request)->isValid()) {
-                $adminClass->prePersist($entity, $form);
-                $this->entityManager->persist($entity);
-                $this->entityManager->flush();
-                $adminClass->postPersist($entity, $form);
+                $this->processForm($form, $adminClass, $entity);
                 $this->session->getFlashBag()->add('success', $name . '.create.success');
 
                 return new RedirectResponse($this->router->generate('ObCmsBundle_module_edit', array(
@@ -256,20 +246,12 @@ class AdminController
             throw $this->createNotFoundException('Unable to find ' . $name . ' entity.');
         }
 
-        $formType = $adminClass->formType();
-        $formType = $formType ? new $formType() : new AdminType($adminClass->formDisplay());
-        $editForm = $this->formFactory->create($formType, $entity);
-        $editForm = $this->addRefererField($request, $editForm);
-
-        $event = new FormEvent($editForm, $entity);
-        $this->dispatcher->dispatch('ob_cms.form.init', $event);
+        $editForm = $this->getFormForAdmin($request, $adminClass, $entity);
+        $this->dispatcher->dispatch('ob_cms.form.init', new FormEvent($editForm, $entity));
 
         if ($request->isMethod('POST')) {
             if ($editForm->submit($request)->isValid()) {
-                $adminClass->prePersist($entity, $editForm);
-                $this->entityManager->persist($entity);
-                $this->entityManager->flush();
-                $adminClass->postPersist($entity, $editForm);
+                $this->processForm($editForm, $adminClass, $entity);
                 $this->session->getFlashBag()->add('success', $name . '.edit.success');
             }
         }
@@ -283,6 +265,31 @@ class AdminController
             'form' => $editForm->createView(),
             'referer' => $this->getReferer($request, $editForm)
         ));
+    }
+
+    /**
+     * @param Request        $request
+     * @param AdminInterface $adminClass
+     * @param object         $entity
+     *
+     * @return FormInterface
+     */
+    private function getFormForAdmin(Request $request, AdminInterface $adminClass, $entity = null)
+    {
+        $formType = $adminClass->formType();
+        $formType = $formType ? new $formType() : new AdminType($adminClass->formDisplay());
+        $form = $this->formFactory->create($formType, $entity);
+        $form = $this->addRefererField($request, $form);
+
+        return $form;
+    }
+
+    private function processForm($form, AdminInterface $adminClass, $entity)
+    {
+        $adminClass->prePersist($entity, $form);
+        $this->entityManager->persist($entity);
+        $this->entityManager->flush();
+        $adminClass->postPersist($entity, $form);
     }
 
     /**
