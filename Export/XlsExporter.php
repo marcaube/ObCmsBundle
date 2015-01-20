@@ -28,7 +28,7 @@ class XlsExporter implements ExporterInterface
         $sheet = $file->setActiveSheetIndex(0);
 
         $sheet = $this->writeRows($sheet, $fields, $data);
-        $sheet = $this->writeHeaders($sheet, $fields);
+        $this->writeHeaders($sheet, $fields);
 
         $writer = $this->phpexcel->createWriter($file, 'Excel5');
 
