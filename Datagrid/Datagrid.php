@@ -154,6 +154,8 @@ class Datagrid implements DatagridInterface
             if (strpos($field, '.') !== false) {
                 list($entity, $column) = explode('.', $field);
                 $isRelation            = method_exists($admin->getClass(), 'set' . ucwords($entity));
+            } else {
+                $column = $field;
             }
 
             if ($value !== null && $value !== '' && array_key_exists($field, $filterFields)) {
@@ -161,7 +163,7 @@ class Datagrid implements DatagridInterface
                     $query->join("o.$field", $field);
                     $query->andWhere("$field = $value");
                 } elseif ($isRelation) {
-                    if (!in_array($entity, $joinedRelations)) {
+                    if (isset($entity) && !in_array($entity, $joinedRelations)) {
                         $query->join("o.$entity", $entity);
                         $joinedRelations[] = $entity;
                     }
