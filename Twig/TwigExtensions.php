@@ -17,8 +17,8 @@ class TwigExtensions extends \Twig_Extension
     public function getFunctions()
     {
         return array(
-            'varType'  => new \Twig_Function_Method($this, 'varType'),
-            'varClass' => new \Twig_Function_Method($this, 'varClass')
+            'varType'  => new \Twig_SimpleFunction('varType', array($this, 'varType')),
+            'varClass' => new \Twig_SimpleFunction('varClass', array($this, 'varClass')),
         );
     }
 
