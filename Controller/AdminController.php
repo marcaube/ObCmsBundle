@@ -408,7 +408,7 @@ class AdminController
             $ids    = array_keys($request->get('action-checkbox', array()));
 
             if (!empty($ids) and $action != '') {
-                $entities = $this->entityManager->getRepository($adminClass->getClass())->findById($ids);
+                $entities = $this->entityManager->getRepository($adminClass->getClass())->findBy(array('id' => $ids));
 
                 foreach ($entities as $entity) {
                     if ($action == 'delete-action') {
