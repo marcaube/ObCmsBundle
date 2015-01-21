@@ -10,6 +10,7 @@ use Ob\CmsBundle\Event\CRUDEvent;
 use Ob\CmsBundle\Event\FormEvent;
 use Ob\CmsBundle\Export\ExporterInterface;
 use Ob\CmsBundle\Form\AdminType;
+use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
@@ -19,7 +20,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 
 class AdminController
 {
