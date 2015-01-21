@@ -2,29 +2,40 @@
 
 namespace Ob\CmsBundle\Datagrid;
 
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Knp\Component\Pager\Pagination\PaginationInterface;
-use Knp\Component\Pager\Paginator;
+use Knp\Component\Pager\PaginatorInterface;
 use Ob\CmsBundle\Admin\AdminInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class Datagrid implements DatagridInterface
 {
+    /**
+     * @var Request
+     */
     private $request;
-    private $objectManager;
+
+    /**
+     * @var EntityManagerInterface
+     */
+    private $entityManager;
+
+    /**
+     * @var PaginatorInterface
+     */
     private $paginator;
 
     /**
-     * @param Request       $request
-     * @param ObjectManager $objectManager
-     * @param Paginator     $paginator
+     * @param Request                $request
+     * @param EntityManagerInterface $entityManager
+     * @param PaginatorInterface     $paginator
      */
-    public function __construct(Request $request, ObjectManager $objectManager, Paginator $paginator)
+    public function __construct(Request $request, EntityManagerInterface $entityManager, PaginatorInterface $paginator)
     {
         $this->request       = $request;
-        $this->objectManager = $objectManager;
+        $this->entityManager = $entityManager;
         $this->paginator     = $paginator;
     }
 
@@ -35,7 +46,7 @@ class Datagrid implements DatagridInterface
      */
     public function getQuery(AdminInterface $admin)
     {
-        $repository = $this->objectManager->getRepository($admin->getCLass());
+        $repository = $this->entityManager->getRepository($admin->getCLass());
 
         $query = $repository->createQueryBuilder('o');
         $query = $admin->query($query);
@@ -85,7 +96,7 @@ class Datagrid implements DatagridInterface
             if (gettype($class) == 'array') {
                 $filterValues = $class;
             } else {
-                $repository   = $this->objectManager->getRepository($class);
+                $repository   = $this->entityManager->getRepository($class);
                 $filterValues = $repository->findAll();
             }
 
