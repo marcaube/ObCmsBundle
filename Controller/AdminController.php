@@ -407,7 +407,7 @@ class AdminController
             $action = $request->get('action');
             $ids    = array_keys($request->get('action-checkbox', array()));
 
-            if (!empty($ids) and $action != '') {
+            if (!empty($ids) && $action != '') {
                 $entities = $this->entityManager->getRepository($adminClass->getClass())->findBy(array('id' => $ids));
 
                 foreach ($entities as $entity) {
