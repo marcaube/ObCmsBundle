@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+TBD
+
+## [0.1.3] - 2016-01-11
+
+### Fixed
+- deprecation notices
+
+
+## [0.1.2] - 2015-01-20
+
 ### Added
 - Configuration for SensioLabsInsight
 
@@ -22,5 +32,7 @@ All notable changes to this project will be documented in this file.
 - Initial release
 
 
-[Unreleased]: https://github.com/marcaube/ObCmsBundle/compare/0.1.1...HEAD
+[Unreleased]: https://github.com/marcaube/ObCmsBundle/compare/0.1.3...HEAD
+[0.1.3]: https://github.com/marcaube/ObCmsBundle/compare/0.1.2...0.1.3
+[0.1.2]: https://github.com/marcaube/ObCmsBundle/compare/0.1.1...0.1.2
 [0.1.1]: https://github.com/marcaube/ObCmsBundle/compare/0.1.0...0.1.1
