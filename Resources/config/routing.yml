@@ -1,23 +1,23 @@
 ObCmsBundle_module_list:
-    pattern: /{name}
+    path: /{name}
     defaults: { _controller: ob_cms.controller:listAction }
 
 ObCmsBundle_module_export:
-    pattern: /{name}/export/{format}
+    path: /{name}/export/{format}
     defaults: { _controller: ob_cms.controller:exportAction }
 
 ObCmsBundle_module_actions:
-    pattern: /{name}/actions
+    path: /{name}/actions
     defaults: { _controller: ob_cms.controller:actionsAction }
 
 ObCmsBundle_module_new:
-    pattern: /{name}/new
+    path: /{name}/new
     defaults: { _controller: ob_cms.controller:newAction }
 
 ObCmsBundle_module_edit:
-    pattern: /{name}/{id}/edit
+    path: /{name}/{id}/edit
     defaults: { _controller: ob_cms.controller:editAction }
 
 ObCmsBundle_module_dashboard:
-    pattern: /
+    path: /
     defaults: { _controller: ob_cms.controller:dashboardAction }
