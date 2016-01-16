@@ -57,7 +57,7 @@
             {% endblock %}
 
 
-            {% render controller("ob_cms.controller:menuAction", {'request': app.request}) %}
+            {{ render(controller("ob_cms.controller:menuAction", {'request': app.request})) }}
 
             <div class="container">
                 {% include "ObCmsBundle:Admin:impersonator.html.twig" %}
