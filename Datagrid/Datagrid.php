@@ -9,6 +9,7 @@ use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Ob\CmsBundle\Admin\AdminInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class Datagrid implements DatagridInterface
 {
@@ -28,13 +29,13 @@ class Datagrid implements DatagridInterface
     private $paginator;
 
     /**
-     * @param Request                $request
+     * @param RequestStack           $requestStack
      * @param EntityManagerInterface $entityManager
      * @param PaginatorInterface     $paginator
      */
-    public function __construct(Request $request, EntityManagerInterface $entityManager, PaginatorInterface $paginator)
+    public function __construct(RequestStack $requestStack, EntityManagerInterface $entityManager, PaginatorInterface $paginator)
     {
-        $this->request       = $request;
+        $this->request       = $requestStack->getCurrentRequest();
         $this->entityManager = $entityManager;
         $this->paginator     = $paginator;
     }
