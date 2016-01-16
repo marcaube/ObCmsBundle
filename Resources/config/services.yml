@@ -5,16 +5,16 @@ services:
     ob_cms.controller:
         class: %ob_cms.classes.controller%
         arguments:
-            - @templating
-            - @doctrine.orm.entity_manager
-            - @form.factory
-            - @router
-            - @session
-            - @ob.cms.admin_container
-            - @ob.cms.admin.datagrid
+            - '@templating'
+            - '@doctrine.orm.entity_manager'
+            - '@form.factory'
+            - '@router'
+            - '@session'
+            - '@ob.cms.admin_container'
+            - '@ob.cms.admin.datagrid'
             - %ob_cms.templates%
-            - @ob.cms.admin.exporter
-            - @event_dispatcher
+            - '@ob.cms.admin.exporter'
+            - '@event_dispatcher'
         scope: request
 
     ob.cms.admin_container:
@@ -29,13 +29,13 @@ services:
     ob.cms.admin.exporter:
         class: Ob\CmsBundle\Export\Exporter
         calls:
-            - [ addExporter, [ @ob.cms.admin.xls_exporter ] ]
+            - [ addExporter, [ '@ob.cms.admin.xls_exporter' ] ]
 
     ob.cms.admin.xls_exporter:
         class: Ob\CmsBundle\Export\XlsExporter
-        arguments: [ @phpexcel ]
+        arguments: [ '@phpexcel' ]
 
     ob.cms.admin.datagrid:
         class: Ob\CmsBundle\Datagrid\Datagrid
-        arguments: [ @request, @doctrine.orm.entity_manager, @knp_paginator ]
+        arguments: [ '@request_stack', '@doctrine.orm.entity_manager', '@knp_paginator' ]
         scope: request
