@@ -12,6 +12,7 @@ use Ob\CmsBundle\Export\ExporterInterface;
 use Ob\CmsBundle\Form\AdminType;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -340,10 +341,16 @@ class AdminController
      */
     private function getFormForAdmin(Request $request, AdminInterface $adminClass, $entity = null)
     {
-        $formType = $adminClass->formType();
-        $formType = $formType ? new $formType() : new AdminType($adminClass->formDisplay());
+        $formType = $adminClass->formType() ?: 'Ob\CmsBundle\Form\AdminType';
         $form     = $this->formFactory->create($formType, $entity);
-        $form     = $this->addRefererField($request, $form);
+
+        if ($formType === 'Ob\CmsBundle\Form\AdminType') {
+            foreach ($adminClass->formDisplay() as $field) {
+                $form->add($field);
+            }
+        }
+
+        $form = $this->addRefererField($request, $form);
 
         return $form;
     }
@@ -366,7 +373,7 @@ class AdminController
     {
         $referer = $this->getReferer($request, $form);
 
-        $form->add('referer', 'hidden', array('mapped' => false));
+        $form->add('referer', HiddenType::class, array('mapped' => false));
         $form->get('referer')->setData($referer);
 
         return $form;
