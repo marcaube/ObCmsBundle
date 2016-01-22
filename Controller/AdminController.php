@@ -268,17 +268,17 @@ class AdminController
         $form = $this->getFormForAdmin($request, $adminClass, $entity);
         $this->dispatcher->dispatch('ob_cms.form.init', new FormEvent($form, $entity));
 
-        if ($request->isMethod('POST')) {
-            if ($form->submit($request)->isValid()) {
-                $this->processForm($form, $adminClass, $entity);
-                $this->session->getFlashBag()->add('success', $name . '.create.success');
+        $form->handleRequest($request);
 
-                return new RedirectResponse($this->router->generate('ObCmsBundle_module_edit', array(
-                    'name'    => $name,
-                    'id'      => $entity->getId(),
-                    'referer' => $this->getReferer($request, $form)
-                )));
-            }
+        if ($form->isValid()) {
+            $this->processForm($form, $adminClass, $entity);
+            $this->session->getFlashBag()->add('success', $name . '.create.success');
+
+            return new RedirectResponse($this->router->generate('ObCmsBundle_module_edit', array(
+                'name'    => $name,
+                'id'      => $entity->getId(),
+                'referer' => $this->getReferer($request, $form)
+            )));
         }
 
         $template = $adminClass->newTemplate() ?: $this->templates['new'];
@@ -311,14 +311,14 @@ class AdminController
             throw new NotFoundHttpException(sprintf('Unable to find %s entity.', $name));
         }
 
-        $editForm = $this->getFormForAdmin($request, $adminClass, $entity);
-        $this->dispatcher->dispatch('ob_cms.form.init', new FormEvent($editForm, $entity));
+        $form = $this->getFormForAdmin($request, $adminClass, $entity);
+        $this->dispatcher->dispatch('ob_cms.form.init', new FormEvent($form, $entity));
 
-        if ($request->isMethod('POST')) {
-            if ($editForm->submit($request)->isValid()) {
-                $this->processForm($editForm, $adminClass, $entity);
-                $this->session->getFlashBag()->add('success', $name . '.edit.success');
-            }
+        $form->handleRequest($request);
+
+        if ($form->isValid()) {
+            $this->processForm($form, $adminClass, $entity);
+            $this->session->getFlashBag()->add('success', $name . '.edit.success');
         }
 
         $template = $adminClass->editTemplate() ?: $this->templates['edit'];
@@ -327,8 +327,8 @@ class AdminController
             'module'     => $name,
             'adminClass' => $adminClass,
             'entity'     => $entity,
-            'form'       => $editForm->createView(),
-            'referer'    => $this->getReferer($request, $editForm)
+            'form'       => $form->createView(),
+            'referer'    => $this->getReferer($request, $form)
         ));
     }
 
