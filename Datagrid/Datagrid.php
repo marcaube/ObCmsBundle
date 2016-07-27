@@ -120,10 +120,13 @@ class Datagrid implements DatagridInterface
             return;
         }
 
-        $expr  = $query->expr()->orX();
-        $joins = array();
+        $expr   = $query->expr()->orX();
+        $joins  = array();
+        $offset = $query->getParameters()->count();
 
         foreach ($searchFields as $k => $field) {
+            $paramKey = $k + $offset;
+
             if (strpos($field, '.') !== false) {
                 list($entity,) = explode('.', $field);
 
@@ -132,12 +135,11 @@ class Datagrid implements DatagridInterface
                     $joins[] = $entity;
                 }
 
-                $expr->add($query->expr()->like("$field", "?$k"));
+                $expr->add($query->expr()->like("$field", "?$paramKey"));
             } else {
-                $expr->add($query->expr()->like("o.$field", "?$k"));
+                $expr->add($query->expr()->like("o.$field", "?$paramKey"));
             }
-
-            $query->setParameter($k, '%' . $searchQuery . '%');
+            $query->setParameter($paramKey, '%' . $searchQuery . '%');
         }
 
         $query->andWhere($expr);
